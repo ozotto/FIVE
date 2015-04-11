@@ -1,0 +1,58 @@
+/* Test Page */
+body{
+    background: #f9f2f4;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.timeline{
+    background: #ffffff;
+    border: 1px solid #97B0F8;
+}
+
+.timeline .lineAxes{
+    stroke: black;
+}
+
+.zoneTime {
+    fill: #D5DDF6;
+}
+.zoneCategories{
+    fill: #D5DDF6;
+}
+
+
+.bar{
+    fill: green;
+}
+
+.item{
+    stroke: black;
+    fill: red;
+}
+
+/* net "*/
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+}
+
+.node text {
+    font: 12px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}

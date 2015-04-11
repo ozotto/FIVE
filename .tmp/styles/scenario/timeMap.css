@@ -1,0 +1,66 @@
+/* Test Page */
+body{
+    background: #f9f2f4;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.timeline{
+    background: #ffffff;
+    border: 1px solid #97B0F8;
+}
+
+.timeline .lineAxes{
+    stroke: black;
+}
+
+.zoneTime {
+    fill: #D5DDF6;
+
+}
+
+.bar{
+    fill: green;
+}
+
+.item{
+    stroke: black;
+    fill: red;
+}
+
+
+/*Map*/
+.zoneMap{
+    fill: #ffffff;
+}
+path {
+    stroke: white;
+    stroke-width: 0.25px;
+    fill: gray;
+}
+
+path.Colombia {
+    stroke: white;
+    stroke-width: 0.25px;
+    fill: green;
+}
+
+div.tooltip {
+    color: #222;
+    background: #fff;
+    padding: .5em;
+    text-shadow: #f5f5f5 0 1px 0;
+    border-radius: 2px;
+    box-shadow: 0px 0px 2px 0px #a6a6a6;
+    opacity: 0.9;
+    position: absolute;
+}
+
+.nameCity{
+    font-size: 1px
+}
