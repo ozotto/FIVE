@@ -32,6 +32,7 @@ body{
 }
 
 .item{
-    stroke: black;
-    fill: red;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 2px;
 }
