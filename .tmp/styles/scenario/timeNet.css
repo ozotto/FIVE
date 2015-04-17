@@ -66,3 +66,13 @@ body{
     stroke: #ccc;
     stroke-width: 2px;
 }
+
+/*Borrar despues*/
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+a:hover, a:focus {
+    color : #ffffff;
+    text-decoration: none;
+}
