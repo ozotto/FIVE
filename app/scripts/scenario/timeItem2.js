@@ -28,9 +28,6 @@ dataCategories[0].items.forEach(function(value){
 })
 
 //Config TimeLine --------------------------------------------------------------
-
-var maxDate = d3.max(data, function(d) { return new Date(d.date); });
-var minDate = d3.min(data, function(d) { return new Date(d.date); });
 var minDate = new Date(2013, 11, 31);
 var maxDate = new Date(2015, 11, 31);
 

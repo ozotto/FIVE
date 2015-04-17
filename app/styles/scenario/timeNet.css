@@ -2,9 +2,16 @@
 body{
     background: #f9f2f4;
 }
-
+/* Verification line Axe Time*/
 .axis path,
 .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axesTimeLine,
+.lineAxeX{
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
@@ -36,13 +43,16 @@ body{
     fill: red;
 }
 
-/* net "*/
+.zoneTimeLine{
+    cursor:pointer;
+}
+
 .node {
     cursor: pointer;
 }
 
 .node circle {
-    fill: #fff;
+    /*fill: #fff;*/
     stroke: steelblue;
     stroke-width: 3px;
 }

@@ -1,20 +1,40 @@
 /**
  * Created by Oscar on 02.04.15.
  */
+var dataCategories = [
+    {
+        categories: [
+            {id: 1, name: 'Sport'},
+            {id: 2, name: 'News'},
+            {id: 3, name: 'People'},
+            {id: 4, name: 'Mode'},
+            {id: 5, name: 'IT'},
+        ],
+        items: [
+            {id: 1, title: "Top Level", date: new Date(2014, 1, 10), categorie: 3 },
+            {id: 2, title: "Level 2: A", date: new Date(2014, 2, 3), categorie: 1},
+            {id: 3, title: "Son of A", date: new Date(2014, 3, 14), categorie: 2},
+            {id: 4, title: "Daughter of A", date: new Date(2014, 4, 6), categorie: 3},
+            {id: 5, title: "Level 2: B", date: new Date(2015, 9, 14), categorie: 2},
+            {id: 6, title: "Item Test", date: new Date(2015, 2, 8), categorie: 2},
+            {id: 7, title: "New article", date: new Date(2015, 8, 29), categorie: 1},
+            {id: 8, title: "Fashion", date: new Date(2015, 3, 15), categorie: 4},
+            {id: 9, title: "Computers", date: new Date(2015, 4, 4), categorie: 5},
+        ]
+    }
+];
+
+
 var data = [
-    {date: new Date(2014, 1, 1), categorie: 3, title: "Top Level"},
-    {date: new Date(2014, 2, 1), categorie: 1, title: "Level 2: A"},
-    {date: new Date(2014, 3, 1), categorie: 2, title: "Son of A"},
-    {date: new Date(2014, 4, 1), categorie: 3, title: "Daughter of A"},
+    {date: new Date(2014, 1, 10), categorie: 3, title: "Top Level"},
+    {date: new Date(2014, 2, 3), categorie: 1, title: "Level 2: A"},
+    {date: new Date(2014, 3, 14), categorie: 2, title: "Son of A"},
+    {date: new Date(2014, 4, 6), categorie: 3, title: "Daughter of A"},
     {date: new Date(2015, 9, 14), categorie: 2, title: "Level 2: B"},
-    {date: new Date(2015, 2, 1), categorie: 2, title: "Item Test"},
-    {date: new Date(2015, 8, 1), categorie: 1, title: "New article"},
+    {date: new Date(2015, 2, 8), categorie: 2, title: "Item Test"},
+    {date: new Date(2015, 8, 29), categorie: 1, title: "New article"},
 ];
-var categories = [
-    {categorie: 3, title: "Sports"},
-    {categorie: 1, title: "News"},
-    {categorie: 2, title: "Categorie"},
-];
+
 //Data Tree
 var dataTree = [
     {

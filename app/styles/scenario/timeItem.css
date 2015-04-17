@@ -4,11 +4,22 @@ body{
 }
 
 .axis path,
+
 .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+
+.lineAxeYitems,
+.axesTimeLine,
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
 
 .timeline{
     background: #ffffff;
@@ -26,13 +37,55 @@ body{
     fill: #D5DDF6;
 }
 
+.textCategories{
+    fill: black;
+}
+
 
 .bar{
     fill: green;
 }
 
 .item{
-    fill: #fff;
     stroke: steelblue;
-    stroke-width: 2px;
+    stroke-width: 3px;
+    /*fill: #ffffff;*/
+    cursor: pointer;
+}
+
+.dataLine line{
+    stroke: #cccccc;
+    stroke-width: 2;
+}
+
+text {
+    fill: black;
+}
+
+rect.zoneCategorie{
+    cursor: pointer;
+}
+
+.lineAxeY{
+    stroke: none !important;
+}
+
+.zoneTimeLine{
+    cursor:pointer;
+}
+
+.lineDivCate{
+    stroke: #cccccc !important;
+    fill-opacity: 0.5;
+    stroke-width: 1;
+}
+
+/*Borrar despues*/
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+a:hover, a:focus {
+    color : #ffffff;
+    text-decoration: none;
 }

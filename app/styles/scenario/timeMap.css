@@ -10,6 +10,13 @@ body{
     shape-rendering: crispEdges;
 }
 
+.axesTimeLine,
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
 .timeline{
     background: #ffffff;
     border: 1px solid #97B0F8;
@@ -63,4 +70,23 @@ div.tooltip {
 
 .nameCity{
     font-size: 1px
+}
+
+.zoneMap {
+    cursor: pointer;
+}
+
+.zoneTimeLine{
+    cursor:pointer;
+}
+
+circle.point{
+    fill: black;
+}
+text {
+    fill: black;
+}
+
+text.nameCity {
+    fill: black
 }

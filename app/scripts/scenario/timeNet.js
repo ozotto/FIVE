@@ -1,31 +1,44 @@
 /**
  * Created by Oscar on 02.04.15.
  */
-//var maxDate = d3.max(data, function(d) { return new Date(d.date); });
-//var minDate = d3.min(data, function(d) { return new Date(d.date); });
-var minDate = new Date(2000, 0, 1);
-var maxDate = new Date(2020, 11, 31);
 
+//Config Graph --------------------------------------------------------------
 var margin = {top: 20, right: 20, bottom: 30, left: 100},
     width = 960,
     height = 500,
     timeHeight = 50,
     posYTimeline = height-timeHeight;
 
-//Config Timeline
+//Config TimeLine --------------------------------------------------------------
+
+//var maxDate = d3.max(data, function(d) { return new Date(d.date); });
+//var minDate = d3.min(data, function(d) { return new Date(d.date); });
+var minDate = new Date(2013, 11, 31);
+var maxDate = new Date(2015, 11, 31);
+
+var customTimeFormat = d3.time.format.multi([
+    ["%H:%M", function(d) { return d.getHours(); }],
+    ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+    ["%d", function(d) { return d.getDate() != 1; }],
+    ["%b", function(d) { return d.getMonth(); }],
+    ["%Y", function() { return true; }]
+]);
+
 var x = d3.time.scale()
     .range([0, width])
     .domain([minDate, maxDate]);
 
 var xAxis = d3.svg.axis()
-    .scale(x);
+    .scale(x)
+    .tickFormat(customTimeFormat)
+    .tickSize(20,0);
 
-var zoom = d3.behavior.zoom()
+var zoomTimeLine = d3.behavior.zoom()
     .x(x)
-    .scaleExtent([1, 100])
+    .scaleExtent([0.2, 100])
     .on("zoom", zoomed);
 
-//Config Tree
+//Config Tree --------------------------------------------------------------
 var i = 0,
     duration = 750,
     root;
@@ -39,105 +52,127 @@ var diagonal = d3.svg.diagonal()
     .projection(function(d) {return [d.y, d.x];});
 
 
-//Plan graph
+//Plan graph ------------------------------------------------------------------------------
 var graph = d3.select("#timeNet")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .attr("class","timeline")
+    .attr("class","timeline");
+//.append("g")
+//.attr("transform", "translate(0,0)");
+
+//Zone Net ------------------------------------------------------------------------------
+
+var zoneNet = graph.append("g")
+    .attr("class", "zoneNet")
     .append("g")
     .attr("transform", "translate(0,0)");
 
-//timeline
-graph.append("rect")
-    .attr("class","zoneTime")
-    .attr("width", width)
-    .attr("height", timeHeight)
-    .attr("y", posYTimeline)
-    .call(zoom);
-
-graph.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0,"+ posYTimeline +")")
-    .call(xAxis);
-
-//------------------------------------------------------------------------------------- Tree
-
 root = dataTree[0];
-//root.x0 = height / 2;
-//root.y0 = 0;
 
-//update(root);
-
-// Compute the new tree layout.
 var nodes = tree.nodes(root),
     links = tree.links(nodes);
 
 nodes.forEach(function(d) { d.y = d.depth * 180; });
 
 // Update the nodes…
-var node = graph.selectAll("node")
+var node = zoneNet.selectAll("node")
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
 // Enter any new nodes at the parent's previous position.
-var nodeEnter = node.enter().append("g")
+var nodeEnter = node.enter()
+    .append("g")
     .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" +  x(new Date(d.date)) + "," + d.x + ")"; });
 
+//Circle Node
 nodeEnter.append("circle")
-    .attr("r", 1e-6)
-    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+    .attr("r", 10)
+    .attr("id", function(d) { return "nodeId"+d.id;  })
+    .style("fill", "#fff")
+    .on("mouseover", function(d) { mouseOverNode(d) })
+    .on("mouseout", function(d) { mouseOutNode(d) });
 
+
+//Text Node
 nodeEnter.append("text")
+    .attr("id", function(d) { return "textNodeId"+d.id;  })
     .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
     .attr("dy", ".35em")
     .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-    .text(function(d) { return d.name; })
-    .style("fill-opacity", 1e-6);
+    .style("fill-opacity", "0")
+    .text(function(d) { return d.name; });
 
-// Transition nodes to their new position.
-var nodeUpdate = node.transition()
-    .duration(duration)
-    .attr("transform", function(d) { return "translate(" +  x(new Date(d.date)) + "," + d.x + ")"; }); //d.y
-
-nodeUpdate.select("circle")
-    .attr("r", 10)
-    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-nodeUpdate.select("text")
-    .style("fill-opacity", 1);
-
-// Transition exiting nodes to the parent's new position.
-var nodeExit = node.exit().transition()
-    .duration(duration)
-    .remove();
-
-nodeExit.select("circle")
-    .attr("r", 1e-6);
-
-nodeExit.select("text")
-    .style("fill-opacity", 1e-6);
-
-// Update the links…
-var link = graph.selectAll("path.link")
+// Connections Node Line
+var link = zoneNet.selectAll("path.link")
     .data(links, function(d) { return d.target.id; });
 
-// Enter any new links at the parent's previous position.
 link.enter().insert("path", "g")
     .attr("class", "link")
-    .attr("d", function(d) {
-        var o = {x: 0, y: 0};  //Pos Initial primer node
-        return diagonal({source: o, target: o});
-    });
-
-// Transition links to their new position.
-link.transition()
-    .duration(duration)
     .attr("d", diagonal);
 
+//Zone TimeLine ------------------------------------------------------------------------------
+
+var zoneTimeLine = graph.append("g")
+    .attr("class", "zoneTimeLine")
+    .append("g")
+    .attr("transform", "translate(0,0)")
+    .call(zoomTimeLine);
+
+zoneTimeLine.append("rect")
+    .attr("class","zoneTime")
+    .attr("width", width)
+    .attr("height", timeHeight)
+    .attr("y", posYTimeline);
+
+zoneTimeLine.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0,"+ posYTimeline +")")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 6)
+    .attr("x", 6)
+    .style("text-anchor", "start");
+
+zoneTimeLine.selectAll("g.x.axis path")
+    .attr("class", "lineAxeX");
+
+zoneTimeLine.selectAll("g.x.axis g.tick line")
+    .attr("class", "axesTimeLine");
+
+//Functions ------------------------------------------------------------------------------
 
 function zoomed() {
-    graph.select(".x.axis").call(xAxis);
+    graph.select(".x.axis").call(xAxis).selectAll("text")
+        .attr("y", 6)
+        .attr("x", 6).style("text-anchor", "start");
     graph.selectAll(".node").attr("transform", function(d) { return "translate(" +  x(new Date(d.date)) + "," + d.x + ")"; })
     graph.selectAll("path.link").attr("d", diagonal)
 }
 
+function mouseOverNode(d){
+    var circleNode = "#nodeId"+ d.id;
+    var TextNode = "#textNodeId"+ d.id;
+
+    zoneNet.select(circleNode)
+        .transition()
+        .style("fill","steelblue")
+        .attr("r", 15);
+
+    zoneNet.select(TextNode)
+        .transition()
+        .attr("x", function(d) { return d.children || d._children ? -18 : 18; })
+        .style("fill-opacity",1);
+}
+function mouseOutNode(d){
+    var circleNode = "#nodeId"+ d.id;
+    var TextNode = "#textNodeId"+ d.id;
+    zoneNet.select(circleNode)
+        .transition()
+        .style("fill","#ffffff")
+        .attr("r", 10);
+    zoneNet.select(TextNode)
+        .transition()
+        .attr("x", function(d) { return d.children || d._children ? -12 : 12; })
+        .style("fill-opacity",0);
+}
