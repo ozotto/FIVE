@@ -33,7 +33,12 @@ body{
 .zoneTime {
     fill: #D5DDF6;
 }
-.zoneCategories{
+
+.infoZoneTime{
+    fill: wheat;
+}
+
+.rectCategories{
     fill: #D5DDF6;
 }
 
@@ -53,7 +58,7 @@ body{
     cursor: pointer;
 }
 
-.dataLine line{
+.itemLine{
     stroke: #cccccc;
     stroke-width: 2;
 }
@@ -62,7 +67,7 @@ text {
     fill: black;
 }
 
-rect.zoneCategorie{
+.tickCategorie{
     cursor: pointer;
 }
 
@@ -80,6 +85,12 @@ rect.zoneCategorie{
     stroke-width: 1;
 }
 
+.lineYaxi {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
 /*Borrar despues*/
 a {
     color: #ffffff;
@@ -88,4 +99,48 @@ a {
 a:hover, a:focus {
     color : #ffffff;
     text-decoration: none;
+}
+
+.y.axis g#3{
+    stroke: red;
+    fill: green;
+}
+
+.lineActualTime{
+    fill: none;
+    stroke: red;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.linePositionTime{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.circlePositionTime{
+    /*
+    stroke: steelblue;
+    stroke-width: 3px;*/
+    fill: green;
+}
+
+.tooltip{
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 30px;
+    background: lightsteelblue;
+    border: 1px solid black;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.textTool {
+    padding: 5px;
+    font: 12px sans-serif;
+    text-align: center;
+    margin: 2px;
 }

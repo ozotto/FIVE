@@ -1,7 +1,4 @@
 /**
- * Created by Oscar on 01.05.15.
- */
-/**
  * Created by Oscar on 02.04.15.
  */
 
@@ -145,9 +142,11 @@ function createNetwork(){
         .enter().append("line")
         .attr("class", "link")
         .attr("id", function(d) { return d.id; })
-        .attr("x1", function(d) { return valuesX(d.source.date); })
+        //.attr("x1", function(d) { return valuesX(d.source.date); })
+        .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return valuesX(d.target.date); })
+        //.attr("x2", function(d) { return valuesX(d.target.date); })
+        .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; })
         .style("opacity", 0)
         .on("mouseover", function(d) {
@@ -161,8 +160,8 @@ function createNetwork(){
                 .style("opacity", 1).style("left", posX + "px")
                 .style("top", posY + "px");
             tooltipTextDate.html("Date: "+d.date+"<br>"+
-            "Item 1: "+ d.source.name+"<br>"+
-            "Item 2: "+ d.target.name)
+                                "Item 1: "+ d.source.name+"<br>"+
+                                "Item 2: "+ d.target.name)
         })
         .on("mouseout", function(d) {
             divTooltipDate.transition()
@@ -178,20 +177,21 @@ function createNetwork(){
         .attr("id", function(d) { return d.id })
         .attr("r","10")
         .attr('stroke-width',2)
-        .attr("cx", function(d) { return valuesX(d.date); })
+        //.attr("cx", function(d) { return valuesX(d.date); })
+        .attr("cx", function(d) { return d.x })
         .attr("cy", function(d) { return (d.y +20 ); }) // +20 por la posicion del grupo items
         .style("opacity", 0)
         .on("mouseover", function(d) {
 
-            var posX = d3.event.x, posY = d3.event.y;
-            posX = posX + 20;
-            posY = posY - 20;
+             var posX = d3.event.x, posY = d3.event.y;
+             posX = posX + 20;
+             posY = posY - 20;
 
-            divTooltip.transition()
-                .duration(200)
-                .style("opacity", 1).style("left", posX + "px")
-                .style("top", posY + "px");
-            tooltipText.html("Title: "+d.name)
+             divTooltip.transition()
+             .duration(200)
+             .style("opacity", 1).style("left", posX + "px")
+             .style("top", posY + "px");
+             tooltipText.html("Title: "+d.name)
         })
         .on("mouseout", function(d) {
             divTooltip.transition()
@@ -352,11 +352,11 @@ function zoomed() {
 //    textActualDate
 
 
-    /*
-     console.log(valuesX.domain());
-     console.log(valuesX.range());
-     console.log(zoomTimeLine.scale());
-     console.log(zoomTimeLine.translate()); */
+/*
+    console.log(valuesX.domain());
+    console.log(valuesX.range());
+    console.log(zoomTimeLine.scale());
+    console.log(zoomTimeLine.translate()); */
     /*console.log(d3.event.scale, d3.event.translate[0]);
 
      valuesX = d3.time.scale()
@@ -372,39 +372,39 @@ function zoomed() {
      .x(valuesX)
      .scaleExtent([0.1, 1000])
      .on("zoom", zoomed);
-     */
+*/
 
-    zoneTimeLine.select(".x.axis").call(axiX).selectAll("text")
-        .attr("y", 6)
-        .attr("x", 6).style("text-anchor", "start");
+        zoneTimeLine.select(".x.axis").call(axiX).selectAll("text")
+            .attr("y", 6)
+            .attr("x", 6).style("text-anchor", "start");
 
-    //Line Actual TimeLine
-    if(valuesX(actualDate) > 0){
-        zoneTimeLine.select(".actualLineTime")
-            .attr("transform", function(){
-                return "translate("+valuesX(actualDate)+",0)";
+        //Line Actual TimeLine
+        if(valuesX(actualDate) > 0){
+            zoneTimeLine.select(".actualLineTime")
+                .attr("transform", function(){
+                    return "translate("+valuesX(actualDate)+",0)";
+                })
+                .style("opacity",1);
+        }else{
+            zoneTimeLine.select(".actualLineTime")
+                .attr("transform", function(){
+                    return "translate("+valuesX(actualDate)+",0)";
+                })
+                .style("opacity",0);
+        }
+
+        zoneNetwork.selectAll(".link")
+            .attr("x1", function (d) {
+                return valuesX(d.source.date);
             })
-            .style("opacity",1);
-    }else{
-        zoneTimeLine.select(".actualLineTime")
-            .attr("transform", function(){
-                return "translate("+valuesX(actualDate)+",0)";
-            })
-            .style("opacity",0);
-    }
+            .attr("x2", function (d) {
+                return valuesX(d.target.date);
+            });
 
-    zoneNetwork.selectAll(".link")
-        .attr("x1", function (d) {
-            return valuesX(d.source.date);
-        })
-        .attr("x2", function (d) {
-            return valuesX(d.target.date);
-        });
-
-    zoneNetwork.selectAll(".item")
-        .attr("cx", function (d) {
-            return valuesX(d.date);
-        });
+        zoneNetwork.selectAll(".item")
+            .attr("cx", function (d) {
+                return valuesX(d.date);
+            });
 }
 
 function formatDate(date){
@@ -474,74 +474,74 @@ function dragmovePosition(xCoord) {
                         .style("opacity", 0);
 
                     /*
-                     zoneNetwork.selectAll(".item").each(function (valuesNode) {
-                     var nodeItem = this;
-                     var countLink;
+                    zoneNetwork.selectAll(".item").each(function (valuesNode) {
+                        var nodeItem = this;
+                        var countLink;
 
-                     if(valuesNode.id == valuesLink.source.id){
+                        if(valuesNode.id == valuesLink.source.id){
 
-                     d3.select(nodeItem)
-                     .transition()
-                     .style("opacity", 0);
+                            d3.select(nodeItem)
+                                .transition()
+                                .style("opacity", 0);
 
-                     }
-                     if(valuesNode.id == valuesLink.target.id){
-                     d3.select(nodeItem)
-                     .transition()
-                     .style("opacity", 0);
-                     }
+                        }
+                        if(valuesNode.id == valuesLink.target.id){
+                            d3.select(nodeItem)
+                                .transition()
+                                .style("opacity", 0);
+                        }
 
-                     }); */
+                    }); */
 
                 }
             });
         }
     });
 
+/*
+    zoneNetwork.selectAll(".link").each(function(values){
+        var posXitem = valuesX(values.date);
+
+        if(posXitem <= xCoord){
+            d3.select(this)
+                .transition()
+                .style("opacity",1);
+
+
+        }else{
+            d3.select(this)
+                .transition()
+                .style("opacity",0);
+        }
+
+    });
+*/
+
     /*
-     zoneNetwork.selectAll(".link").each(function(values){
-     var posXitem = valuesX(values.date);
+    links.forEach(function(valueLink) {
+        dateConnection = valueLink.date;
+        dateConnection = formatDate(dateConnection);
 
-     if(posXitem <= xCoord){
-     d3.select(this)
-     .transition()
-     .style("opacity",1);
+        if(dateConnection == dateCurrent ){
 
+            d3.selectAll(".link").each(function(value) {
 
-     }else{
-     d3.select(this)
-     .transition()
-     .style("opacity",0);
-     }
+                if(value.id == valueLink.id){
 
-     });
-     */
+                    console.log(dateConnection+" = "+dateCurrent+" id: "+valueLink.id);
 
-    /*
-     links.forEach(function(valueLink) {
-     dateConnection = valueLink.date;
-     dateConnection = formatDate(dateConnection);
-
-     if(dateConnection == dateCurrent ){
-
-     d3.selectAll(".link").each(function(value) {
-
-     if(value.id == valueLink.id){
-
-     console.log(dateConnection+" = "+dateCurrent+" id: "+valueLink.id);
-
-     d3.select(this).transition().duration(800).style("opacity", 1);
-     //.data(links)
-     /*.attr("x1", function(d) { console.log(d); console.log(valuesX(d.source.date)); return valuesX(d.source.date); })
-     .attr("y1", function(d) { console.log(d.source.y); return d.source.y; })
-     .attr("x2", function(d) { console.log(valuesX(d.target.date)); return valuesX(d.target.date); })
-     .attr("y2", function(d) { console.log(d.target.y); return d.target.y; });*/
+                    d3.select(this).transition().duration(800).style("opacity", 1);
+                        //.data(links)
+                        /*.attr("x1", function(d) { console.log(d); console.log(valuesX(d.source.date)); return valuesX(d.source.date); })
+                        .attr("y1", function(d) { console.log(d.source.y); return d.source.y; })
+                        .attr("x2", function(d) { console.log(valuesX(d.target.date)); return valuesX(d.target.date); })
+                        .attr("y2", function(d) { console.log(d.target.y); return d.target.y; });*/
     /*                }
 
-     });
+            });
 
-     }
-     }); */
+        }
+    }); */
 
 }
 
@@ -573,5 +573,4 @@ function mouseOutNode(d){
         .attr("x", function(d) { return d.children || d._children ? -12 : 12; })
         .style("fill-opacity",0);
 }
-
 

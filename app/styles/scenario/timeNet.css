@@ -29,6 +29,11 @@ body{
 .zoneTime {
     fill: #D5DDF6;
 }
+
+.infoZoneTime{
+    fill: wheat;
+}
+
 .zoneCategories{
     fill: #D5DDF6;
 }
@@ -39,35 +44,79 @@ body{
 }
 
 .item{
-    stroke: black;
-    fill: red;
+    stroke: steelblue;
+    stroke-width: 3px;
+    fill: #ffffff;
+    cursor: pointer;
+}
+
+.link{
+    stroke: #cccccc;
+    stroke-width: 4;
+    cursor: pointer;
 }
 
 .zoneTimeLine{
     cursor:pointer;
 }
 
-.node {
-    cursor: pointer;
-}
-
-.node circle {
-    /*fill: #fff;*/
-    stroke: steelblue;
-    stroke-width: 3px;
-}
-
-.node text {
-    font: 12px sans-serif;
-}
-
-.link {
+.lineActualTime{
     fill: none;
-    stroke: #ccc;
-    stroke-width: 2px;
+    stroke: red;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
 }
 
-/*Borrar despues*/
+.linePositionTime{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.circlePositionTime{
+    /*
+    stroke: steelblue;
+    stroke-width: 3px;*/
+    fill: green;
+}
+
+.tooltip{
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 30px;
+    background: lightsteelblue;
+    border: 1px solid black;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.textTool {
+    padding: 5px;
+    font: 12px sans-serif;
+    text-align: center;
+    margin: 2px;
+}
+
+.tooltipDate{
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 30px;
+    background: #f7f7f7;
+    border: 1px solid black;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.dateTool{
+    padding: 5px;
+    font: 12px sans-serif;
+    text-align: center;
+    margin: 2px;
+}
+
 a {
     color: #ffffff;
     text-decoration: none;

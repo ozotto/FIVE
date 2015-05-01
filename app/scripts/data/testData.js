@@ -78,6 +78,7 @@ for(i = 1; i<=nivels; i++){
     dataTree.push({  "name": nameNode, "date": dateNode, "parent": parentNode, "children": childrenData })
 
 }
+
 /*
 dataTree = [
     {
