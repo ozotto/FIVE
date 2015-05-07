@@ -90,3 +90,12 @@ text {
 text.nameCity {
     fill: black
 }
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+a:hover, a:focus {
+    color : #ffffff;
+    text-decoration: none;
+}
