@@ -6,10 +6,10 @@
 var widthGraph, heightGraph, timeLineHeight = 70;
 
 //Variables Network
-var sourceData, links = [], items, countNode = [], items2 = [], links2 = [];
+var sourceData, links = [], items, countNode = [];
 var force;
 var sizeRadio = 10, sizeStroke = 2;
-var random, randomMin, randomMax, valOld;
+var zoomNetwork;
 
 var graphLinks, graphItems, linksEnter, nodesEnter;
 
@@ -125,40 +125,6 @@ function configureNetwork(){
         .links(links)
         .start();
 
-    items.forEach(function(e){
-        random = Math.floor(Math.random() * 380 ) + 10;
-        randomMin = random - 20;
-        randomMax = random + 20;
-        if(valOld >= randomMin && valOld <= randomMax) random = Math.floor(Math.random() * 380 ) + 10;
-        if(random > 410) random = Math.floor(Math.random() * 380 ) + 10;
-
-        items2.push({
-            date: e.date,
-            id: e.id,
-            index: e.index,
-            name: e.name,
-            px: e.px,
-            py: random,
-            weight: e.weight,
-            x:e.x,
-            y: random
-        });
-        valOld = random
-    });
-
-    links.forEach(function(e){
-
-        var sourceNodeData = items2.filter(function(n) { return n.id === e.source.id; })[0],
-            targetNodeData = items2.filter(function(n) { return n.id === e.target.id; })[0]
-
-        links2.push({
-            date: e.date,
-            id: e.id,
-            source: sourceNodeData,
-            target: targetNodeData
-        })
-    });
-
 }
 
 function configureTimeLine(){
@@ -197,6 +163,11 @@ function configureTimeLine(){
 
 function createNetwork(){
 
+    zoomNetwork = d3.behavior.zoom()
+        //.x(valuesX)
+        .scaleExtent([0.1, 100])
+        .on("zoom", zoomedNet);
+
     //Zone Network ------------------------------------------------------------------------------
     zoneNetwork = graph.append("g")
         .attr("class", "zoneNetwork")
@@ -208,15 +179,15 @@ function createNetwork(){
         .attr("height", (heightGraph - timeLineHeight) );
 
     graphLinks = zoneNetwork.append("g")
-        .attr("class", "links")
-        .attr("transform", "translate(0,20)"); // +20 magin top
+        .attr("class", "links");
+        //.attr("transform", "translate(0,20)"); // +20 magin top
 
     graphItems = zoneNetwork.append("g")
         .attr("class", "items");
 
     //Items
     nodesEnter = graphItems.selectAll("nodes")
-        .data(items2)
+        .data(items)
         .enter()
         .append("g")
         .attr("class", "item")
@@ -232,7 +203,7 @@ function createNetwork(){
 
     //Links
     linksEnter = graphLinks.selectAll("links")
-        .data(links2)
+        .data(links)
         .enter()
         .append("g")
         .attr("class", "link")
@@ -371,6 +342,31 @@ function createLineTime(){
 
 //Functions ------------------------------------------------------------------------------
 
+function zoomedNet(){
+    //Link
+    sizeStroke = 2 * zoomTimeLine.scale();
+    if(sizeStroke <= 1) sizeStroke = 1;
+    if(sizeStroke >= 5) sizeStroke = 5;
+
+    zoneNetwork.selectAll(".pathLink")
+        //.attr("x1", function (d) { return valuesX(d.source.date); })
+        //.attr("x2", function (d) { return valuesX(d.target.date); })
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("x2", function(d) { return d.target.x; })
+        .style("stroke-width", sizeStroke);
+
+    //Nodes
+    sizeRadio = 10 * zoomTimeLine.scale();
+    if(sizeRadio >= 40) sizeRadio = 40;
+    if(sizeRadio <= 4) sizeRadio = 4;
+
+    zoneNetwork.selectAll(".node")
+        //.attr("cx", function (d) { return valuesX(d.date); })
+        .attr("cx", function(d) { return d.x })
+        .attr("r", sizeRadio );
+
+}
+
 function zoomed() {
 
     zoneTimeLine.select(".x.axis").call(axiX).selectAll("text")
@@ -391,8 +387,10 @@ function zoomed() {
     if(sizeStroke >= 5) sizeStroke = 5;
 
     zoneNetwork.selectAll(".pathLink")
-        .attr("x1", function (d) { return valuesX(d.source.date); })
-        .attr("x2", function (d) { return valuesX(d.target.date); })
+        //.attr("x1", function (d) { return valuesX(d.source.date); })
+        //.attr("x2", function (d) { return valuesX(d.target.date); })
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("x2", function(d) { return d.target.x; })
         .style("stroke-width", sizeStroke);
 
     //Nodes
@@ -401,7 +399,8 @@ function zoomed() {
     if(sizeRadio <= 4) sizeRadio = 4;
 
     zoneNetwork.selectAll(".node")
-        .attr("cx", function (d) { return valuesX(d.date); })
+        //.attr("cx", function (d) { return valuesX(d.date); })
+        .attr("cx", function(d) { return d.x })
         .attr("r", sizeRadio );
 
 }
@@ -459,8 +458,10 @@ function dragmovePosition(xCoord) {
                             .attr("class", "node")
                             .attr("r", sizeRadio)
                             .attr('stroke-width',2)
-                            .attr("cx", function(d) { return valuesX(d.date); })
-                            .attr("cy", function(d) { return (d.y +20 ); })
+                            //.attr("cx", function(d) { return valuesX(d.date); })
+                            //.attr("cy", function(d) { return (d.y +20 ); })
+                            .attr("cx", function(d) { return d.x })
+                            .attr("cy", function(d) { return d.y })
                             .on('mouseover', mouseOverNode)
                             .on('mouseout', mouseOutNode);
                             /*.on('mouseover', function(d) {
@@ -485,8 +486,10 @@ function dragmovePosition(xCoord) {
                             .attr("class", "node")
                             .attr("r","10")
                             .attr('stroke-width',2)
-                            .attr("cx", function(d) { return valuesX(d.date); })
-                            .attr("cy", function(d) { return (d.y +20 ); })
+                            //.attr("cx", function(d) { return valuesX(d.date); })
+                            //.attr("cy", function(d) { return (d.y +20 ); })
+                            .attr("cx", function(d) { return d.x })
+                            .attr("cy", function(d) { return d.y })
                             .on('mouseover', mouseOverNode)
                             .on('mouseout', mouseOutNode);
 
@@ -507,9 +510,13 @@ function dragmovePosition(xCoord) {
                             .append("line")
                             .attr("class", "pathLink")
                             .attr("id", function(d) { return d.id; })
-                            .attr("x1", function(d) { return valuesX(d.source.date); })
+                            //.attr("x1", function(d) { return valuesX(d.source.date); })
+                            //.attr("y1", function(d) { return d.source.y; })
+                            //.attr("x2", function(d) { return valuesX(d.target.date); })
+                            //.attr("y2", function(d) { return d.target.y; })
+                            .attr("x1", function(d) { return d.source.x; })
                             .attr("y1", function(d) { return d.source.y; })
-                            .attr("x2", function(d) { return valuesX(d.target.date); })
+                            .attr("x2", function(d) { return d.target.x; })
                             .attr("y2", function(d) { return d.target.y; })
                             .style("stroke-width", sizeStroke);
 
@@ -614,19 +621,11 @@ function mouseOverNode(d){
         if(e.source == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "black");
-            /*
-            d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
         }
         //Links Target
         if(e.target == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "black");
-            /*
-            d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
         }
     });
 
@@ -643,17 +642,11 @@ function mouseOutNode(d){
         if(e.source == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "#cccccc");
-            /*d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black"); */
         }
         //Links Target
         if(e.target == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "#cccccc");
-            /*
-            d.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
         }
     });
 }

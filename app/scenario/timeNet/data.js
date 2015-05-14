@@ -160,3 +160,29 @@ networkData = [
         ]
 
     }];
+
+
+var networkFriends;
+networkFriends = [
+    {
+        "nodes": [
+            {"id": 1, date: new Date(2008, 3, 4), "name": "Annouk"},
+            {"id": 2, date: new Date(2008, 1, 1), "name": "Oscar"},
+            {"id": 3, date: new Date(2009, 1, 14), "name": "Jipson"},
+            {"id": 4, date: new Date(2009, 1, 14), "name": "Amandine"},
+            {"id": 5, date: new Date(2010, 11, 1), "name": "Alvaro"},
+            {"id": 6, date: new Date(2012, 4, 6), "name": "Diana"},
+            {"id": 7, date: new Date(2013, 7, 3), "name": "Joseph"},
+            {"id": 8, date: new Date(2008, 8, 20), "name": "amiJispon"}
+        ],
+        "links": [
+            {"id": 1, "source": 1, "target": 2, date: new Date(2008, 5, 23) },
+            {"id": 2, "source": 1, "target": 3, date: new Date(2013, 2, 13) },
+            {"id": 3, "source": 1, "target": 4, date: new Date(2013, 0, 21) },
+            {"id": 4, "source": 1, "target": 5, date: new Date(2014, 3, 14) },
+            {"id": 5, "source": 1, "target": 6, date: new Date(2014, 3, 14) },
+            {"id": 6, "source": 1, "target": 7, date: new Date(2014, 3, 14) },
+            {"id": 7, "source": 2, "target": 6, date: new Date(2013, 9, 5) }
+        ]
+
+    }];

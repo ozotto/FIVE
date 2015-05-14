@@ -62,7 +62,8 @@ function configureNetwork(){
         .size([widthGraph, (heightGraph - timeLineHeight - 50)]); //50 menos para margen
 
     //configure Data
-    sourceData = networkData[0];
+    //sourceData = networkData[0];
+    sourceData = networkFriends[0];
     items = sourceData.nodes;
 
     sourceData.links.forEach(function(e) {
@@ -84,7 +85,7 @@ function configureNetwork(){
 function configureTimeLine(){
 
     posYTimeline = heightGraph-timeLineHeight;
-    minDate = new Date(2013, 11, 31);
+    minDate = new Date(2007, 11, 31);
     maxDate = new Date(2015, 11, 31);
 
     //actualDate = new Date(2015,3,28);
@@ -148,7 +149,7 @@ function createNetwork(){
         .attr("y2", function(d) { return d.target.y; })
         .style("opacity", 0)
         .on("mouseover", function(d) {
-
+            //console.log(d);
             var posX = d3.event.x, posY = d3.event.y;
             posX = posX + 20;
             posY = posY - 20;

@@ -1,22 +1,4 @@
-/* Test Page */
-body{
-    background: #f9f2f4;
-}
-/* Verification line Axe Time*/
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.axesTimeLine,
-.lineAxeX{
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
+/* TimeLine     ------------------- */
 .timeline{
     background: #ffffff;
     border: 1px solid #97B0F8;
@@ -32,28 +14,6 @@ body{
 
 .infoZoneTime{
     fill: wheat;
-}
-
-.zoneCategories{
-    fill: #D5DDF6;
-}
-
-
-.bar{
-    fill: green;
-}
-
-.item{
-    stroke: steelblue;
-    stroke-width: 3px;
-    fill: #ffffff;
-    cursor: pointer;
-}
-
-.link{
-    stroke: #cccccc;
-    stroke-width: 4;
-    cursor: pointer;
 }
 
 .zoneTimeLine{
@@ -75,22 +35,38 @@ body{
 }
 
 .circlePositionTime{
-    /*
-    stroke: steelblue;
-    stroke-width: 3px;*/
     fill: green;
 }
 
-.tooltip{
-    position: absolute;
-    text-align: center;
-    min-width: 60px;
-    min-height: 30px;
-    background: lightsteelblue;
-    border: 1px solid black;
-    border-radius: 4px;
-    pointer-events: none;
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
+
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/* Items        ------------------- */
+.backgroundNetwork{
+    fill: white;
+}
+
+.item{
+    stroke: steelblue;
+    stroke-width: 3px;
+    fill: white;
+    cursor: pointer;
+}
+.itemLine{
+    stroke: #cccccc;
+    stroke-width: 2;
+}
+
 
 .textTool {
     padding: 5px;
@@ -99,29 +75,40 @@ body{
     margin: 2px;
 }
 
-.tooltipDate{
+/* Links       ------------------- */
+.link{
+     cursor: pointer;
+}
+.pathLink{
+    stroke: #cccccc;
+/*    stroke-width: 4; */
+
+}
+
+/* Tooltip      ------------------- */
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
     position: absolute;
     text-align: center;
-    min-width: 60px;
-    min-height: 30px;
-    background: #f7f7f7;
-    border: 1px solid black;
-    border-radius: 4px;
-    pointer-events: none;
 }
 
-.dateTool{
-    padding: 5px;
-    font: 12px sans-serif;
-    text-align: center;
-    margin: 2px;
-}
-
-a {
-    color: #ffffff;
-    text-decoration: none;
-}
-a:hover, a:focus {
-    color : #ffffff;
-    text-decoration: none;
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
 }

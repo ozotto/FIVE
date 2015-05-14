@@ -1,22 +1,4 @@
-/* Test Page */
-body{
-    background: #f9f2f4;
-}
-/* Verification line Axe Time*/
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.axesTimeLine,
-.lineAxeX{
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
+/* TimeLine     ------------------- */
 .timeline{
     background: #ffffff;
     border: 1px solid #97B0F8;
@@ -32,28 +14,6 @@ body{
 
 .infoZoneTime{
     fill: wheat;
-}
-
-.zoneCategories{
-    fill: #D5DDF6;
-}
-
-
-.bar{
-    fill: green;
-}
-
-.item{
-    stroke: steelblue;
-    stroke-width: 3px;
-    fill: #ffffff;
-    cursor: pointer;
-}
-
-.link{
-    stroke: #cccccc;
-    stroke-width: 4;
-    cursor: pointer;
 }
 
 .zoneTimeLine{
@@ -75,12 +35,60 @@ body{
 }
 
 .circlePositionTime{
-    /*
-    stroke: steelblue;
-    stroke-width: 3px;*/
     fill: green;
 }
 
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/* Items        ------------------- */
+.item{
+    stroke: steelblue;
+    stroke-width: 3px;
+    fill: white;
+    cursor: pointer;
+}
+.itemLine{
+    stroke: #cccccc;
+    stroke-width: 2;
+}
+
+.tooltip{
+    position: absolute;
+    text-align: center;
+    min-width: 60px;
+    min-height: 30px;
+    background: lightsteelblue;
+    border: 1px solid black;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.textTool {
+    padding: 5px;
+    font: 12px sans-serif;
+    text-align: center;
+    margin: 2px;
+}
+
+/* Links       ------------------- */
+.link{
+    stroke: #cccccc;
+    stroke-width: 4;
+    cursor: pointer;
+}
+
+/* Tooltip      ------------------- */
 .tooltip{
     position: absolute;
     text-align: center;
@@ -115,14 +123,4 @@ body{
     font: 12px sans-serif;
     text-align: center;
     margin: 2px;
-}
-
-
-a {
-    color: #ffffff;
-    text-decoration: none;
-}
-a:hover, a:focus {
-    color : #ffffff;
-    text-decoration: none;
 }

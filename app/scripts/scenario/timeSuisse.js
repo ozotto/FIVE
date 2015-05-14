@@ -494,7 +494,12 @@ function zoomed() {
         .attr("y", 6)
         .attr("x", 6).style("text-anchor", "start");
 
-    //Items
+    //Current Date
+    d3.select(".textStartDate")
+        .text(function(d) { return "Start Date: "+formatDate(valuesX.domain()[0]);  });
+
+    d3.select(".textEndDate")
+        .text(function(d) { return "End Date: "+formatDate(valuesX.domain()[0]);  });
 
 }
 
