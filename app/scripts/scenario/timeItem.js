@@ -2,14 +2,30 @@
  * Created by Oscar on 02.04.15.
  */
 
-//Config Graph --------------------------------------------------------------
-var widthGraph, heightGraph, widhCategories, timeLineHeight = 70;
+//Variables Graph --------------------------------------------------------------
+var widthGraph, heightGraph, timeLineHeight = 70;
 
-//Config Data --------------------------------------------------------------
-
+//Variables Items
+var heightCategorie, heightLastCategorie, rangeCategorieInitial;
+var valuesY, axiY;
+var widhCategories;
 var dataItemsGraph =[], domainCategoriesGraph=[], dataCategoriesGraph=[];
+var itemEnter, item;
 
-//Config TimeLine --------------------------------------------------------------
+var posCategorieInitial = [], posItemsInitial = [];
+var sortAsc = true;
+
+var delayTransition = function(d,i){ return (i+1)*50; }
+var positionCategories = [], positionItems = [], backgroundCategorie = {};
+var noSorted = true;
+
+var countClicked = 0;
+
+var categorieTransform, XtranslateCat, YtranslateCat, nameCat;
+var categoriePosition = [], newcategoriePosition = [];
+var containData, isOrdered;
+
+//Variables TimeLine --------------------------------------------------------------
 
 var minDate, maxDate, actualDate, positionDate;
 var customTimeFormat;
@@ -19,30 +35,30 @@ var posYTimeline;
 
 var drag, positionSelected, valuesXposition;
 
-//Config Categories --------------------------------------------------------------
-
-var heightCategorie, heightLastCategorie, rangeCategorieInitial;
-var valuesY, axiY;
-
-//Config Items
-var itemEnter, item;
-
-
 //Variables Graphiques ------------------------------------------------------------------------------
 
 var graph, zoneItem, zoneTimeLine, zoneCategories;
 
-var posCategorieInitial = [], posItemsInitial = [];
-var sortAsc = true;
+var tipItem = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+        return "<strong>Item:</strong> <span style='color:red'>" + d.NameItem + "</span>";
+    });
+
 
 // Draw graphique
 draw();
 
+var width = $("#timeNet").width(),
+    aspect = 500 / 960,
+    height = width * aspect;
+
 function draw(){
 
-    configureDataSource();
-    configureCategories();
     configureParamsGraph();
+    configureItems();
+    configureCategories();
     configureTimeLine();
     createItems();
     createCategories();
@@ -53,15 +69,70 @@ function draw(){
 
 //Functions Creation Graph ------------------------------------------------------------------------------
 
-function configureDataSource(){
-    //msg ERROR si on n'a pas bien furni les données
-    //prendre data et faire des array commun pour le grapguique
+function configureParamsGraph(){
+
+    widthGraph = 960
+    heightGraph = 500
+
+    //Plan graph ----------------
+
+    graph = d3.select("#timeItem")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMidYMid")
+        .attr("viewBox", "0 0 " + widthGraph + " " + heightGraph)
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class","timeline");
+
+}
+
+$(window).resize(function() {
+    var width = $("#timeItem").width();
+    graph.attr("width", width);
+    graph.attr("height", width * aspect);
+});
+
+function configureTimeLine(){
+
+    posYTimeline = heightGraph-timeLineHeight;
+    minDate = new Date(2013, 11, 31);
+    maxDate = new Date(2015, 11, 31);
+
+    positionDate = new Date(2014,3,28);
+    actualDate = new Date();
+
+    customTimeFormat = d3.time.format.multi([
+        ["%H:%M", function(d) { return d.getHours(); }],
+        ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+        ["%d", function(d) { return d.getDate() != 1; }],
+        ["%b", function(d) { return d.getMonth(); }],
+        ["%Y", function() { return true; }]
+    ]);
+
+    valuesX = d3.time.scale()
+        .range([0, (widthGraph - widhCategories)])
+        .domain([minDate, maxDate]);
+
+    axiX = d3.svg.axis()
+        .scale(valuesX)
+        .tickFormat(customTimeFormat)
+        .tickSize(20,0);
+
+    zoomTimeLine = d3.behavior.zoom()
+        .x(valuesX)
+        .scaleExtent([0.1, 1000])
+        .on("zoom", zoomed);
+
+}
+
+function configureItems(){
+
     var idItem, idCat, nameCat, dateItem, NameItem;
 
     dataCategories[0].categories.forEach(function(value){
         domainCategoriesGraph.push(value.id);
         dataCategoriesGraph.push({ id:value.id, name:value.name });
-    })
+    });
 
     dataCategories[0].items.forEach(function(value){
         idItem = value.id
@@ -73,126 +144,96 @@ function configureDataSource(){
         dateItem = value.date;
         NameItem = value.title;
         dataItemsGraph.push({"idItem": idItem, "idCat": idCat, "nameCat":nameCat, "dateItem": dateItem, "NameItem":NameItem})
-    })
+    });
 
-};
+}
 
 function configureCategories(){
-/*
-    heightCategorie = (height - timeLineHeight) / domainCategoriesGraph.length;
-    rangeCategorieInitial = (height - timeLineHeight) - heightCategorie;
+
+    heightCategorie = (heightGraph - timeLineHeight) / domainCategoriesGraph.length;
+    rangeCategorieInitial = heightGraph - timeLineHeight - heightCategorie;
     heightLastCategorie = rangeCategorieInitial / (domainCategoriesGraph.length - 1);
-    heightGraph = height;
-*/
-    heightCategorie = 50;
-    rangeCategorieInitial = heightCategorie * domainCategoriesGraph.length;
-    heightLastCategorie = rangeCategorieInitial / (domainCategoriesGraph.length - 1);
-    heightGraph = (heightCategorie * domainCategoriesGraph.length) + timeLineHeight + heightLastCategorie; //Height  Total Categories
 
-
-
-    widhCategories = 100; //Va donne configueCategories
-    //widhCategories = width / 8;
+    widhCategories = 100;
 
     valuesY = d3.scale.ordinal()
         .domain(domainCategoriesGraph)
-        //.rangePoints([200, 0]);
-        //.domain(dataCGraph)
         .rangePoints([rangeCategorieInitial, 0]);
 
     axiY = d3.svg.axis()
         .scale(valuesY)
         .orient("left");
-//.tickSize(widhCategories);
-
-
 }
 
-function configureParamsGraph(){
+function createItems(){
+    //Zone Items ------------------------------------------------------------------------------
+    zoneItem = graph.append("g")
+        .attr("class", "zoneItem")
+        .attr("transform", "translate(" + widhCategories + ",0)");
 
-    widthGraph = 960;
-    //widthGraph = width;
+    item = zoneItem.selectAll("item")
+        .data(dataItemsGraph);
 
-    //Plan graph ------------------------------------------------------------------------------
-    graph = d3.select("#timeItem")
-        .append("svg")
-        .attr("width", widthGraph)
-        .attr("height", heightGraph)
-        .attr("class","timeline");
+    itemEnter = item.enter().append("g")
+        .attr("class", "dataItem")
+        .attr("idItem", function(d){ return d.idItem })
+        .attr("transform", function(d) {
+            var xpos, ypos;
+            xpos = valuesX(new Date(d.dateItem));
+            ypos = valuesY(d.idCat) + (heightLastCategorie /2);
+            return "translate("+xpos+","+ypos+")";
+        } )
+        .attr('clicked', false)
+        .attr("idCategorie", function(d){ return d.idCat })
+        .style("opacity", 0)
+        .call(tipItem)
+        .on('mouseover', function(d){
+            tipItem.show(d);
+        })
+        .on("mouseout", function(d){
+            tipItem.hide(d);
+        });
 
-/*
-    graph = d3.select("#timeItem")
-        .append("svg")
-        .attr("preserveAspectRatio", "xMidYMid")
-        .attr("viewBox", "0 0 " + widthGraph + " " + heightGraph)
-        .attr("width", widthGraph)
-        .attr("height", height)
-        .attr("class","timeline");
-        */
+    //Line
+    itemEnter.append("line")
+        .attr("class", function(d) { return "itemLine idItem"+d.idItem;  })
+        .attr("x1", 0 )
+        .attr("y1", 0 )
+        .attr("x2", 0 )
+        .attr("y2", 0 );
+
+    //Circle
+    itemEnter.append("circle")
+        .attr("class", function(d) { return "item idItem"+d.idItem+" item_idCat"+ d.idCat  ;  })
+        .attr("cx", 0 )
+        .attr("cy", 0 )
+        .attr("r","10")
+        .attr('stroke-width',2)
+        .attr('id',function(d) { return "item_idItem"+ d.idItem;})
+        .attr("fill", "#ffffff")
+        .on('mouseover', function(d){
+            d3.select(this).style("fill","orange")
+        })
+        .on('mouseout', function(d){
+            d3.select(this).style("fill","white")
+        });;
+
+
+    //Text
+    itemEnter.append("text")
+        .attr("class", function(d) { return "itemText idItem"+d.idItem;  })
+        .attr("x", 0 )
+        .attr("y", 0 )
+        .style("fill-opacity",0)
+        .text(function(d) { return d.NameItem;  });
 }
-
-
-function configureTimeLine(){
-
-    posYTimeline = heightGraph-timeLineHeight;
-    minDate = new Date(2013, 11, 31);
-    maxDate = new Date(2015, 11, 31);
-
-    //actualDate = new Date(2015,3,28);
-    positionDate = new Date(2014,3,28);
-    actualDate = new Date();
-
-    customTimeFormat = d3.time.format.multi([
-        ["%H:%M", function (d) {
-            return d.getHours();
-        }],
-        ["%a %d", function (d) {
-            return d.getDay() && d.getDate() != 1;
-        }],
-        ["%d", function (d) {
-            return d.getDate() != 1;
-        }],
-        ["%b", function (d) {
-            return d.getMonth();
-        }],
-        ["%Y", function () {
-            return true;
-        }]
-    ]);
-
-    valuesX = d3.time.scale()
-        .range([0, (widthGraph - widhCategories)])
-        //.range([0, widthGraph])
-        .domain([minDate, maxDate]);
-
-    valuesXposition = d3.time.scale()
-        //.range([0, (widthGraph - widhCategories)])
-        .domain([0, 860]);
-
-    axiX = d3.svg.axis()
-        .scale(valuesX)
-        .tickFormat(customTimeFormat)
-        .tickSize(20, 0);
-
-    zoomTimeLine = d3.behavior.zoom()
-        .x(valuesX)
-        .scaleExtent([0.1, 1000])
-        .on("zoom", zoomed);
-    /*
-     drag = d3.behavior.drag()
-     .on("dragstart", function (){ positionSelected = true; })
-     .on("drag", dragmovePosition)
-     .on("dragend", function (){ positionSelected = false; });
-     */
-};
 
 function createCategories(){
 
     //Zone Categories ------------------------------------------------------------------------------
     zoneCategories = graph.append("g")
         .attr("class", "zoneCategories")
-        .append("g")
-        .attr("transform", "translate(0,0)");
+        .append("g");
 
     zoneCategories.append("rect")
         .attr("class","rectCategories")
@@ -208,7 +249,7 @@ function createCategories(){
         .attr("x2", widhCategories)
         .attr("y2", 0);
 
-    //Config Name Categorie
+    //Axes Y categories
     zoneCategories.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + widhCategories + ",0)")
@@ -219,7 +260,7 @@ function createCategories(){
         .attr("clicked", false)
         .on("mouseover", function(d) { mouseOverCategorie(d) })
         .on("mouseout", function(d) { mouseOutCategorie(d) })
-        .on("click", function(d) { mouseClickCategorie(d) });;
+        .on("click", function(d) { mouseClickCategorie(d) });
 
     zoneCategories.selectAll(".tickCategorie")
         .selectAll("text").remove();
@@ -228,12 +269,11 @@ function createCategories(){
         .selectAll("line").remove();
 
     //Config Zone Categorie
-
     zoneCategories.selectAll(".tickCategorie")
         .append("rect")
         .attr("class", function(d) { return "zoneCategorie"+d;  })
         .attr("width", widhCategories)
-        .attr("height", heightLastCategorie)
+        .attr("height", heightCategorie)
         .attr("x", -widhCategories)
         .attr("y", 1)
         .attr("fill", "#D5DDF6");
@@ -241,7 +281,7 @@ function createCategories(){
     zoneCategories.selectAll(".tickCategorie")
         .append("text")
         .attr("class", "textCategorie")
-        .attr("y", heightLastCategorie/2)
+        .attr("y", heightCategorie/2)
         .attr("x", -85)
         .style("text-anchor", "start")
         .text(function(d) {
@@ -254,9 +294,9 @@ function createCategories(){
         .append("line")
         .attr("class", "lineAxeYitems")
         .attr("x1", -widhCategories)
-        .attr("y1", heightLastCategorie)
+        .attr("y1", heightCategorie)
         .attr("x2", 0)
-        .attr("y2", heightLastCategorie);
+        .attr("y2", heightCategorie);
 
     zoneCategories.selectAll(".tickCategorie")
         .append("line")
@@ -268,9 +308,7 @@ function createCategories(){
 
     zoneCategories.selectAll("g.y.axis path")
         .attr("class", "lineAxeY");
-
-
-};
+}
 
 function createLineTime(){
 
@@ -285,17 +323,15 @@ function createLineTime(){
     pos2 = (widthGraph / 3) + 5;
     pos3 = ((widthGraph / 3) + pos2) + 5;
 
-//    pos2 = 310;
- //   pos3 = 700;
+    pos2 = 360;
+    pos3 = 710;
 
     sizeLineTime = timeLineHeight -sizeInfoLineTime;
 
     //Zone TimeLine ------------------------------------------------------------------------------
     zoneTimeLine = graph.append("g")
         .attr("class", "zoneTimeLine")
-        .attr("transform", "translate(" + (widhCategories - 1) + ","+posYTimeline+")");
-    //.attr("transform", "translate(0,"+posYTimeline+")");
-    //.call(zoomTimeLine);
+        .attr("transform", "translate(" + widhCategories + ","+posYTimeline+")");
 
     //Information LineTime
     infoTimeLine = zoneTimeLine.append("g")
@@ -303,7 +339,6 @@ function createLineTime(){
 
     infoTimeLine.append("rect")
         .attr("class","infoZoneTime")
-        //.attr("width", widthGraph)
         .attr("width", (widthGraph - widhCategories))
         .attr("height", sizeInfoLineTime);
 
@@ -311,7 +346,7 @@ function createLineTime(){
         .attr("class", "lineAxeX")
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", widthGraph)
+        .attr("x2", (widthGraph - widhCategories))
         .attr("x1", 0);
 
     infoStartDate = infoTimeLine.append("g")
@@ -336,7 +371,6 @@ function createLineTime(){
         .text(function(d) { return "End Date: "+formatDate(valuesX.domain()[1]);  });
 
     //Creation LineTime
-
     timeLineZone = zoneTimeLine.append("g")
         .attr("class", "timelineZone")
         .attr("transform", "translate(0,"+ sizeInfoLineTime +")")
@@ -344,12 +378,11 @@ function createLineTime(){
         .on("mousemove", function () {
             var xCoord = d3.mouse(this)[0];
             dragmovePosition(xCoord);
-        });;
+        });
 
     timeLineZone.append("rect")
         .attr("class","zoneTime")
         .attr("width", (widthGraph - widhCategories))
-        //.attr("width", widthGraph)
         .attr("height", sizeLineTime);
 
     timeLineZone.append("g")
@@ -386,14 +419,8 @@ function createLineTime(){
             var posline = valuesX(positionDate);
             return "translate("+posline+",0)";
         });
-    /*.call(drag)
-     .on("click", function () {
-     var xCoord = d3.mouse(this)[0];
-     currentDateActual(xCoord);
-     });;*/
 
-
-    positionLineTime .append("line")
+    positionLineTime.append("line")
         .attr("class", "linePositionTime")
         .attr("y1", 25)
         .attr("y2", sizeLineTime);
@@ -403,88 +430,45 @@ function createLineTime(){
         .attr("cy", 25 )
         .attr("r", 5)
 
-};
+}
 
-var divTooltip = d3.select("#timeItem").append("div").attr("class", "tooltip").style("opacity", 0);
+function savePositionInitial(){
+    zoneCategories.selectAll(".tickCategorie").each(function(d, i) {
+        categorieTransform = d3.transform(d3.select(this).attr("transform"))
+        XtranslateCat = categorieTransform.translate[0];
+        YtranslateCat = categorieTransform.translate[1];
+        nameCat = searchNameCategorie(d);
+        posCategorieInitial.push({ id: d, name:nameCat, posx:XtranslateCat, posy: YtranslateCat, order: i });
+    });
 
-var tooltipText = divTooltip.append("div")
-    .attr("class", "textTool");
+    zoneItem.selectAll(".dataItem").each(function(value){
 
-
-function createItems(){
-
-    //Zone Items ------------------------------------------------------------------------------
-    zoneItem = graph.append("g")
-        .attr("class", "zoneItem")
-        .attr("transform", "translate(" + widhCategories + ",0)");
-
-    item = zoneItem.selectAll("item")
-        .data(dataItemsGraph);
-
-    itemEnter = item.enter().append("g")
-        .attr("class", "dataItem")
-        .attr("idItem", function(d){ return d.idItem })
-        .attr("transform", function(d) {
-            var xpos, ypos;
-            xpos = valuesX(new Date(d.dateItem));
-            ypos = valuesY(d.idCat) + (heightLastCategorie /2);
-            return "translate("+xpos+","+ypos+")";
-        } )
-        .attr('clicked', false)
-        .attr("idCategorie", function(d){ return d.idCat })
-        .style("opacity", 0)
-        .on("mouseover", function(d) {
-            var posX = d3.event.x, posY = d3.event.y;
-            posX = posX + 20;
-            posY = posY - 20;
-
-            divTooltip.transition()
-                .duration(200)
-                .style("opacity", 1).style("left", posX + "px")
-                .style("top", posY + "px");
-            tooltipText.html("Title: "+d.NameItem)
-
+        posItemsInitial.push({
+            id:value.idItem,
+            posx: d3.transform(d3.select(this).attr("transform")).translate[0],
+            posy: d3.transform(d3.select(this).attr("transform")).translate[1]
         })
-        .on("mouseout", function(d) {
-            divTooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-        })
-        // .on("mouseover", function(d) { mouseOverItem(d) })
-        //.on("mouseout", function(d) { mouseOutItem(d) })
-        .on("click", function(d) { mouseClickItem(d) });
+
+    });
+}
+
+//Functions ------------------------------------------------------------------------------
+
+function zoomed() {
+
+    zoneTimeLine.select(".x.axis").call(axiX).selectAll("text")
+        .attr("y", 6)
+        .attr("x", 6).style("text-anchor", "start");
+
+    //Current Date
+    d3.select(".textStartDate")
+        .text(function(d) { return "Start Date: "+formatDate(valuesX.domain()[0]);  });
+
+    d3.select(".textEndDate")
+        .text(function(d) { return "End Date: "+formatDate(valuesX.domain()[0]);  });
 
 
-    //Line
-    itemEnter.append("line")
-        .attr("class", function(d) { return "itemLine idItem"+d.idItem;  })
-        .attr("x1", 0 )
-        .attr("y1", 0 )
-        .attr("x2", 0 )
-        .attr("y2", 0 );
-
-    //Circle
-    itemEnter.append("circle")
-        .attr("class", function(d) { return "item idItem"+d.idItem+" item_idCat"+ d.idCat  ;  })
-        .attr("cx", 0 )
-        .attr("cy", 0 )
-        .attr("r","10")
-        .attr('stroke-width',2)
-        .attr('id',function(d) { return "item_idItem"+ d.idItem;})
-        .attr("fill", "#ffffff");
-
-
-    //Text
-    itemEnter.append("text")
-        .attr("class", function(d) { return "itemText idItem"+d.idItem;  })
-        .attr("x", 0 )
-        .attr("y", 0 )
-        .style("fill-opacity",0)
-        .text(function(d) { return d.NameItem;  });
-
-};
-
-//Functions Interactions ------------------------------------------------------------------------------
+}
 
 function searchNameCategorie(d){
     var nameCategorie;
@@ -511,173 +495,6 @@ function formatDate(date){
     dateFormat = dd+'/'+mm+'/'+yyyy;
     return dateFormat;
 }
-
-
-function compareCategorie(a,b) {
-
-    if(sortAsc){
-        if (a.name < b.name)
-            return -1;
-        if (a.name > b.name)
-            return 1;
-        return 0;
-    }else if(!sortAsc){
-        if (a.name < b.name)
-            return 1;
-        if (a.name > b.name)
-            return -1;
-        return 0;
-    }
-
-
-}
-
-function zoomed() {
-    //si hay acciones iniciar el zoom; no se como pero inicialo jajajaj
-
-    if(!positionSelected){
-
-        //Zoom and path axes X
-        zoneTimeLine.select(".x.axis").call(axiX).selectAll("text")
-            .attr("y", 6)
-            .attr("x", 6).style("text-anchor", "start");
-
-        //Actually Date
-        d3.select(".textStartDate")
-            .text(function(d) { return "Start Date: "+formatDate(valuesX.domain()[0]);  });
-
-        d3.select(".textEndDate")
-            .text(function(d) { return "End Date: "+formatDate(valuesX.domain()[0]);  });
-
-        //Line Actual TimeLine
-        if(valuesX(actualDate) > 0){
-            zoneTimeLine.select(".actualLineTime")
-                .attr("transform", function(){
-                    return "translate("+valuesX(actualDate)+",0)";
-                })
-                .style("opacity",1);
-        }else{
-            zoneTimeLine.select(".actualLineTime")
-                .attr("transform", function(){
-                    return "translate("+valuesX(actualDate)+",0)";
-                })
-                .style("opacity",0);
-        }
-
-
-        //Animation Items
-        zoneItem.selectAll(".dataItem")
-            .attr("transform", function(d) {
-
-                var xpos, ypos;
-                xpos = valuesX(new Date(d.dateItem));
-
-                zoneCategories.selectAll(".tickCategorie").each(function(value){
-                    if(value == d.idCat){
-                        ypos = (d3.transform(d3.select(this).attr("transform")).translate[1]) + (heightLastCategorie/2);
-                    }
-                })
-
-                return "translate("+xpos+","+ypos+")";
-            } )
-
-    }
-
-
-    /*
-     standby
-     console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-     d3.selectAll("g.x.axis g.tick text")
-     .attr("y2", function(d){
-     console.log(d);
-     });
-
-     console.log(zoomTimeLine.scale());
-     console.log(d3.event.scale, d3.event.translate[0]);
-     */
-
-}
-
-
-var verData;
-
-function dragmovePosition(xCoord) {
-
-    var dateConnection, dateCurrent;
-
-    dateCurrent = valuesX.invert(xCoord);
-    dateCurrent = formatDate(dateCurrent);
-
-
-    d3.select(".textActualDate")
-        .text(function(d) { return "Current Date: "+dateCurrent;  });
-
-
-    d3.select(".positionLineTime").attr("transform", "translate(" + xCoord + ",0)");
-
-    //Search Items small to datac current
-    dataItemsGraph.forEach(function(e){
-        if(e.dateItem <=  valuesX.invert(xCoord)){
-            zoneItem.selectAll(".dataItem").each(function(valuesItem){
-                if(e.idItem == valuesItem.idItem){
-                    //console.log("id: "+e.idItem+" date: "+dateCurrent);
-                    d3.select(this)
-                        .transition()
-                        .style("opacity",1);
-                }
-
-            });
-        }else{
-            zoneItem.selectAll(".dataItem").each(function(valuesItem){
-                if(e.idItem == valuesItem.idItem){
-                    //console.log("id: "+e.idItem+" date: "+dateCurrent);
-                    d3.select(this)
-                        .transition()
-                        .style("opacity",0);
-                }
-
-            });
-        }
-    });
-
-    /*
-     verQue = d3.event;
-     verMouse = d3.mouse;
-
-     //var xCoord = d3.mouse(this)[0];
-     //var y = d3.event.y;
-     if(x>0 && x < (widthGraph - widhCategories))
-     d3.select(this).attr("transform", "translate(" + x + ",0)");
-
-
-
-
-     var posXitem;
-
-     //Items
-     zoneItem.selectAll(".dataItem").each(function(valuesItme){
-     posXitem = d3.transform(d3.select(this).attr("transform")).translate[0]
-
-     if(posXitem <= x){
-     d3.select(this)
-     .transition()
-     .style("opacity",1);
-     }else{
-     d3.select(this)
-     .transition()
-     .style("opacity",0);
-     }
-
-     });
-     */
-}
-
-//Delay to item
-var delayTransition = function(d,i){ return (i+1)*50; }
-var positionCategories = [], positionItems = [], backgroundCategorie = {};
-var noSorted = true;
-
-var countClicked = 0;
 
 function mouseClickCategorie(d){
 
@@ -911,46 +728,61 @@ function mouseOutCategorie(d){
         .attr("fill","#ffffff");
 }
 
+function dragmovePosition(xCoord) {
 
-//Buttons --------------------------------------------------
+    var dateCurrent, ctlVisible, ctlVisibleLink;
+    var ctlSource, ctlTarget, itemValue;
 
-var test;
-
-
-var categorieTransform, XtranslateCat, YtranslateCat, nameCat;
-var categoriePosition = [], newcategoriePosition = [];
-var containData, isOrdered;
+    dateCurrent = valuesX.invert(xCoord);
+    dateCurrent = formatDate(dateCurrent);
 
 
-function savePositionInitial(){
+    d3.select(".textActualDate").text(function(d) { return "Current Date: "+dateCurrent;  });
 
-    zoneCategories.selectAll(".tickCategorie").each(function(d, i) {
-        categorieTransform = d3.transform(d3.select(this).attr("transform"))
-        XtranslateCat = categorieTransform.translate[0];
-        YtranslateCat = categorieTransform.translate[1];
-        nameCat = searchNameCategorie(d);
-        posCategorieInitial.push({ id: d, name:nameCat, posx:XtranslateCat, posy: YtranslateCat, order: i });
+    d3.select(".positionLineTime").attr("transform", "translate(" + xCoord + ",0)");
+
+    //Search Items small to datac current
+    dataItemsGraph.forEach(function(e){
+        if(e.dateItem <=  valuesX.invert(xCoord)){
+            zoneItem.selectAll(".dataItem").each(function(valuesItem){
+                if(e.idItem == valuesItem.idItem){
+                    //console.log("id: "+e.idItem+" date: "+dateCurrent);
+                    d3.select(this)
+                        .transition()
+                        .style("opacity",1);
+                }
+
+            });
+        }else{
+            zoneItem.selectAll(".dataItem").each(function(valuesItem){
+                if(e.idItem == valuesItem.idItem){
+                    //console.log("id: "+e.idItem+" date: "+dateCurrent);
+                    d3.select(this)
+                        .transition()
+                        .style("opacity",0);
+                }
+
+            });
+        }
     });
-
-    zoneItem.selectAll(".dataItem").each(function(value){
-
-        posItemsInitial.push({
-            id:value.idItem,
-            posx: d3.transform(d3.select(this).attr("transform")).translate[0],
-            posy: d3.transform(d3.select(this).attr("transform")).translate[1]
-        })
-
-    });
-
-
 
 }
 
-function arrayObjectIndexOf(myArray, searchTerm, property) {
-    for(var i = 0, len = myArray.length; i < len; i++) {
-        if (myArray[i][property] === searchTerm) return true;
+function compareCategorie(a,b) {
+
+    if(sortAsc){
+        if (a.name < b.name)
+            return -1;
+        if (a.name > b.name)
+            return 1;
+        return 0;
+    }else if(!sortAsc){
+        if (a.name < b.name)
+            return 1;
+        if (a.name > b.name)
+            return -1;
+        return 0;
     }
-    return false;
 }
 
 function sortCategories () {
@@ -1002,81 +834,3 @@ function sortCategories () {
 
     }
 };
-
-function mouseOverItem(d){
-    var champ = ".item.idItem"+ d.idItem;
-    var attrText = ".itemText.idItem"+ d.idItem
-
-    zoneItem.select(champ)
-        .transition()
-        .attr("fill","steelblue")
-        .attr("r", 15);
-
-    zoneItem.select(attrText)
-        .transition()
-        .attr("x", 20)
-        .style("fill-opacity",1);
-}
-
-function mouseOutItem(d){
-    var champ = ".item.idItem"+ d.idItem;
-    var attrText = ".itemText.idItem"+ d.idItem;
-
-    //console.log(champ);
-
-    zoneItem.select(champ)
-        .transition()
-        .attr("fill","#ffffff")
-        .attr("r", 10);
-
-    zoneItem.select(attrText)
-        .transition()
-        .attr("x", 0 )
-        .style("fill-opacity",0);
-}
-
-function mouseClickItem(d) {
-    console.log("click");
-
-    var attrCircle = ".item.idItem"+ d.idItem;
-    var attrLine = ".itemLine.idItem"+ d.idItem;
-
-    zoneItem.selectAll(".dataItem").each(function() {
-
-        var clicked = d3.select(this).attr("clicked");
-        var idItem = d3.select(this).attr("idItem");
-
-        if(idItem == d.idItem && clicked == "false"){
-
-            //Circle
-            zoneItem.select(attrCircle)
-                .transition()
-                .attr("fill","steelblue");
-
-            //Line
-            zoneItem.select(attrLine)
-                .transition()
-                .duration(500)
-                .attr('y2',posYTimeline);
-
-            d3.select(this).attr("clicked",true);
-
-        }else if(idItem == d.idItem && clicked == "true") {
-            //Circle
-            zoneItem.select(attrCircle)
-                .transition()
-                .attr("fill","#ffffff");
-
-            //Line
-            zoneItem.select(attrLine)
-                .transition()
-                .duration(500)
-                .attr('y2', 0 );
-
-            d3.select(this).attr("clicked",false);
-
-        }
-
-    });
-
-}

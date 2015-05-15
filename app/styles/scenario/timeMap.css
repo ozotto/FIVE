@@ -1,22 +1,4 @@
-/* Test Page */
-body{
-    background: #f9f2f4;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.axesTimeLine,
-.lineAxeX{
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
+/* TimeLine     ------------------- */
 .timeline{
     background: #ffffff;
     border: 1px solid #97B0F8;
@@ -28,33 +10,84 @@ body{
 
 .zoneTime {
     fill: #D5DDF6;
-
 }
 
-.bar{
+.infoZoneTime{
+    fill: wheat;
+}
+
+.zoneTimeLine{
+    cursor:pointer;
+}
+
+.lineActualTime{
+    fill: none;
+    stroke: red;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.linePositionTime{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+.circlePositionTime{
     fill: green;
 }
 
-.item{
-    stroke: black;
-    fill: red;
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
 
-/*Map*/
+/* Map          ------------------- */
 .zoneMap{
     fill: #ffffff;
+    cursor: pointer;
 }
-path {
-    stroke: white;
+
+.pathCountry {
+    stroke: black;
     stroke-width: 0.25px;
     fill: gray;
 }
 
-path.Colombia {
+.pathCountry.Colombia {
     stroke: white;
     stroke-width: 0.25px;
     fill: green;
+}
+
+.pathState{
+    stroke: black;
+    stroke-width: 0.25px;
+}
+
+.pathCities{
+    fill: black;
+}
+
+.pathItems{
+    fill: red;
+}
+
+.item{
+    cursor: pointer;
+}
+
+.state{
+    cursor: pointer;
 }
 
 div.tooltip {
@@ -68,18 +101,7 @@ div.tooltip {
     position: absolute;
 }
 
-.nameCity{
-    font-size: 1px
-}
-
-.zoneMap {
-    cursor: pointer;
-}
-
-.zoneTimeLine{
-    cursor:pointer;
-}
-
+/* Items        ------------------- */
 circle.point{
     fill: black;
 }
@@ -88,14 +110,27 @@ text {
 }
 
 text.nameCity {
-    fill: black
+    fill: black;
+    font-size: 1px
 }
 
-a {
-    color: #ffffff;
-    text-decoration: none;
+
+
+
+
+
+/*
+
+
+
+.nameCity{
+
 }
-a:hover, a:focus {
-    color : #ffffff;
-    text-decoration: none;
+
+
+.zoneTimeLine{
+    cursor:pointer;
 }
+
+
+*/
