@@ -186,7 +186,7 @@ function configureTimeLine(){
     maxDate = new Date(2015, 11, 31);
 
     //actualDate = new Date(2015,3,28);
-    positionDate = new Date(2014,3,28);
+    positionDate = new Date(2008,0,1);
     actualDate = new Date();
 
     customTimeFormat = d3.time.format.multi([
@@ -481,16 +481,7 @@ function dragmovePosition(xCoord) {
                             .attr("cy", function(d) { return (d.y +20 ); })
                             .on('mouseover', mouseOverNode)
                             .on('mouseout', mouseOutNode);
-                            /*.on('mouseover', function(d) {
-                                d3.select(this)
-                                    .transition()
-                                    .style("fill", "orange");
-                            })
-                            .on("mouseout", function(d){
-                                d3.select(this)
-                                    .transition()
-                                    .style("fill", "white")
-                            });*/
+
                     }
 
                     //Target
@@ -622,8 +613,14 @@ function dragmovePosition(xCoord) {
 
 
 function mouseOverNode(d){
+
+    d3.selectAll(".node").sort(function (a, b) {
+        if (a.id != d.id) return -1;
+        else return 1;
+    });
+
     d3.select(this)
-        .transition()
+        //.transition()
         .style("fill", "orange")
         .style("stroke", "black");
 
@@ -632,19 +629,21 @@ function mouseOverNode(d){
         if(e.source == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "black");
-            /*
-            d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
+
+            d3.selectAll(".node").filter(function(data) { return data.id == e.target })
+                .style("stroke", "black")
+                .style("fill", "orange");
+
         }
         //Links Target
         if(e.target == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "black");
-            /*
-            d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
+
+            d3.selectAll(".node").filter(function(data) { return data.id == e.source })
+                .style("stroke", "black")
+                .style("fill", "orange");
+
         }
     });
 
@@ -652,7 +651,7 @@ function mouseOverNode(d){
 
 function mouseOutNode(d){
     d3.select(this)
-        .transition()
+        //.transition()
         .style("fill", "white")
         .style("stroke", "steelblue");
 
@@ -661,17 +660,20 @@ function mouseOutNode(d){
         if(e.source == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "#cccccc");
-            /*d3.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black"); */
+
+            d3.selectAll(".node").filter(function(data) { return data.id == e.target })
+                .style("stroke", "steelblue")
+                .style("fill", "white");
         }
         //Links Target
         if(e.target == d.id){
             d3.selectAll(".pathLink").filter(function(data) { return data.id == e.id })
                 .style("stroke", "#cccccc");
-            /*
-            d.selectAll(".node").filter(function(data) { return data.id == e.id })
-                .style("stroke", "black");
-                */
+
+            d3.selectAll(".node").filter(function(data) { return data.id == e.source })
+                .style("stroke", "steelblue")
+                .style("fill", "white");
+
         }
     });
 }
