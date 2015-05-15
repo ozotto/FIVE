@@ -204,7 +204,6 @@ function zoomed() {
     graph.select(".x.axis").call(xAxis).selectAll("text")
         .attr("y", 6)
         .attr("x", 6).style("text-anchor", "start");
-
 }
 
 function zoomedMap() {

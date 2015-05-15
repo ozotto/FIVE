@@ -45,6 +45,10 @@ var tipItem = d3.tip()
 // Draw graphique
 draw();
 
+var width = $("#timeMap").width(),
+    aspect = 500 / 960,
+    height = width * aspect;
+
 function draw(){
 
     configureParamsGraph();
@@ -59,17 +63,32 @@ function draw(){
 
 function configureParamsGraph(){
 
-    widthGraph = 960
-    heightGraph = 500
+    widthGraph = 960;
+    heightGraph = 500;
 
     //Plan graph ----------------
+    /*
     graph = d3.select("#timeMap")
         .append("svg")
         .attr("width", widthGraph)
         .attr("height", heightGraph)
         .attr("class","timeline");
+    */
+    graph = d3.select("#timeMap")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMidYMid")
+        .attr("viewBox", "0 0 " + widthGraph + " " + heightGraph)
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class","timeline");
+
 
 }
+$(window).resize(function() {
+    var width = $("#timeMap").width();
+    graph.attr("width", width);
+    graph.attr("height", width * aspect);
+});
 
 function configureTimeLine(){
 

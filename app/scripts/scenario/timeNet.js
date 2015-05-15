@@ -44,6 +44,10 @@ var tipLink = d3.tip()
 // Draw graphique
 draw();
 
+var width = $("#timeNet").width(),
+    aspect = 500 / 960,
+    height = width * aspect;
+
 function draw(){
 
     configureParamsGraph();
@@ -62,13 +66,27 @@ function configureParamsGraph(){
     heightGraph = 500
 
     //Plan graph ----------------
-    graph = d3.select("#timeNet")
+    /*graph = d3.select("#timeNet")
         .append("svg")
         .attr("width", widthGraph)
         .attr("height", heightGraph)
+        .attr("class","timeline"); */
+
+    graph = d3.select("#timeNet")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMidYMid")
+        .attr("viewBox", "0 0 " + widthGraph + " " + heightGraph)
+        .attr("width", width)
+        .attr("height", height)
         .attr("class","timeline");
 
 }
+
+$(window).resize(function() {
+    var width = $("#timeNet").width();
+    graph.attr("width", width);
+    graph.attr("height", width * aspect);
+});
 
 function configureNetwork(){
 

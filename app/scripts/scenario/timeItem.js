@@ -53,7 +53,6 @@ function draw(){
 
 //Functions Creation Graph ------------------------------------------------------------------------------
 
-
 function configureDataSource(){
     //msg ERROR si on n'a pas bien furni les données
     //prendre data et faire des array commun pour le grapguique
@@ -79,16 +78,25 @@ function configureDataSource(){
 };
 
 function configureCategories(){
-
+/*
+    heightCategorie = (height - timeLineHeight) / domainCategoriesGraph.length;
+    rangeCategorieInitial = (height - timeLineHeight) - heightCategorie;
+    heightLastCategorie = rangeCategorieInitial / (domainCategoriesGraph.length - 1);
+    heightGraph = height;
+*/
     heightCategorie = 50;
     rangeCategorieInitial = heightCategorie * domainCategoriesGraph.length;
     heightLastCategorie = rangeCategorieInitial / (domainCategoriesGraph.length - 1);
     heightGraph = (heightCategorie * domainCategoriesGraph.length) + timeLineHeight + heightLastCategorie; //Height  Total Categories
 
+
+
     widhCategories = 100; //Va donne configueCategories
+    //widhCategories = width / 8;
 
     valuesY = d3.scale.ordinal()
         .domain(domainCategoriesGraph)
+        //.rangePoints([200, 0]);
         //.domain(dataCGraph)
         .rangePoints([rangeCategorieInitial, 0]);
 
@@ -103,6 +111,7 @@ function configureCategories(){
 function configureParamsGraph(){
 
     widthGraph = 960;
+    //widthGraph = width;
 
     //Plan graph ------------------------------------------------------------------------------
     graph = d3.select("#timeItem")
@@ -110,7 +119,18 @@ function configureParamsGraph(){
         .attr("width", widthGraph)
         .attr("height", heightGraph)
         .attr("class","timeline");
+
+/*
+    graph = d3.select("#timeItem")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMidYMid")
+        .attr("viewBox", "0 0 " + widthGraph + " " + heightGraph)
+        .attr("width", widthGraph)
+        .attr("height", height)
+        .attr("class","timeline");
+        */
 }
+
 
 function configureTimeLine(){
 
@@ -208,6 +228,7 @@ function createCategories(){
         .selectAll("line").remove();
 
     //Config Zone Categorie
+
     zoneCategories.selectAll(".tickCategorie")
         .append("rect")
         .attr("class", function(d) { return "zoneCategorie"+d;  })
@@ -248,6 +269,7 @@ function createCategories(){
     zoneCategories.selectAll("g.y.axis path")
         .attr("class", "lineAxeY");
 
+
 };
 
 function createLineTime(){
@@ -263,8 +285,8 @@ function createLineTime(){
     pos2 = (widthGraph / 3) + 5;
     pos3 = ((widthGraph / 3) + pos2) + 5;
 
-    pos2 = 310;
-    pos3 = 710;
+//    pos2 = 310;
+ //   pos3 = 700;
 
     sizeLineTime = timeLineHeight -sizeInfoLineTime;
 
