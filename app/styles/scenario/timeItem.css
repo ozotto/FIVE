@@ -57,9 +57,9 @@
 }
 
 .item{
-    stroke: steelblue;
-    stroke-width: 3px;
-    fill: white;
+/*    stroke: steelblue;
+    stroke-width: 3px; */
+    fill: steelblue;
     cursor: pointer;
 }
 .itemLine{
