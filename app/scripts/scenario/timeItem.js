@@ -951,6 +951,10 @@ function sortCategories () {
             })
 
             //Transition Items
+
+            //Change to filter
+           // d3.selectAll(".item").filter(function(d){ return d.idItem == 2 })
+
             d3.selectAll(".item").each(function(value){
                 var catItem = d3.select(this).attr("idCat");
                 var itemYpos = (heightLastCategorie /2) + categories.posy;

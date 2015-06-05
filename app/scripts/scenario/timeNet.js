@@ -577,11 +577,15 @@ function dragmovePosition(xCoord) {
                             if (e.source.id == valuesItem.id && ctlVisible == "true" && ctlSource <= 0) {
                                 d3.select(itemValue).attr("visible", false);
 
+
+                                d3.selectAll(".node").filter(function(d){ return d.id == e.source.id; }).remove();
+
+                                /*
                                 d3.selectAll(".node").each(function(val){
                                     if(e.source.id == val.id){
                                         d3.select(this).remove();
                                     }
-                                });
+                                }); */
                             }
 
                             //Target
