@@ -63,9 +63,9 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="infotimeItem.html">TimeItem</a></li>
-                <li><a href="infotimeNet.html">TimeNet</a></li>
-                <li class="active"><a href="infotimeMap.html">TimeMap</a></li>
+                <li><a href="doctimeItem.html">TimeItem</a></li>
+                <li class="active"><a href="doctimeNet.html">TimeNet</a></li>
+                <li><a href="doctimeMap.html">TimeMap</a></li>
             </ul>
         </div>
     </div>
@@ -77,16 +77,15 @@
 
     <h2>Download</h2>
 
-    <a class="download" href="../framework/timeMap.js" download="timeMap.js">timeMap.js</a>
+    <a class="download" href="../framework/timeNet.js" download="timeNet.js">timeNet.js</a>
 
     <h2>Implementation</h2>
 
     <div class="jumbotronCustom">
         <div class="container">
-            <!-- <script src="timeItem.js"></script> -->
             <span class="nt">&lt;script</span>
             <span class="na">src=</span>
-            <span class="s">&#34;timeMap.js&#34;</span>
+            <span class="s">&#34;timeItem.js&#34;</span>
             <span class="nt"> &gt; </span>
             <span class="nt">&lt;/script></span>
         </div>
@@ -94,10 +93,9 @@
 
     <div class="jumbotronCustom">
         <div class="container">
-            <!-- <div id="timeItem"></div> -->
             <span class="nt">&lt;div</span>
             <span class="na">id=</span>
-            <span class="s">&#34;timeMap&#34;</span>
+            <span class="s">&#34;timeItem&#34;</span>
             <span class="nt"> &gt; </span>
             <span class="nt">&lt;/div></span>
         </div>
@@ -108,49 +106,48 @@
     <div class="jumbotronCustom">
         <div class="container">
             <span class="nt">var</span>
-            <span class="na"> timeMapData</span>
-            <span class="nt"> = [</span>
+            <span class="na"> timeNetData</span>
+            <span class="nt"> = {</span>
+            <br>
+            &nbsp;&nbsp;<span class="s">nodes : </span> <span class="nt">[ </span>
             <br>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
             <span class="na"> id: </span>1,
-            <span class="na"> title: </span>Item,
             <span class="na"> date: </span>01-01-2010,
-            <span class="na"> coordinates: </span><span class="na"> [ </span>7.063768, 46.613474<span class="na"> ] </span>
+            <span class="na"> title: </span>Item1
+            <span class="nt"> },</span>
+
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
+            <span class="na"> id: </span>2,
+            <span class="na"> date: </span>06-04-2014,
+            <span class="na"> title: </span>Item2
+            <span class="nt"> },</span>
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;...
+
+            <br>
+            &nbsp;&nbsp;<span class="nt"> ], </span>
+
+            <br>
+            &nbsp;&nbsp;<span class="s">links : </span> <span class="nt">[ </span>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
+            <span class="na"> id: </span>1,
+            <span class="na"> source: </span>1,
+            <span class="na"> target: </span>2,
+            <span class="na"> date: </span>05-01-2013
             <span class="nt"> },</span>
             <br>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
             <span class="na"> id: </span>2,
-            <span class="na"> title: </span>Item2,
-            <span class="na"> date: </span>01-05-2010,
-            <span class="na"> coordinates: </span><span class="na"> [ </span>7.155774, 46.802842<span class="na"> ] </span>
+            <span class="na"> source: </span>1,
+            <span class="na"> target: </span>3,
+            <span class="na"> date: </span>05-06-2017
             <span class="nt"> },</span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;...
-            <span class="nt"><br>];</span>
-        </div>
-    </div>
-
-    <h2>Custom Map</h2>
-    <div class="jumbotronCustom">
-        <div class="container">
-
-            <span class="nt">var</span>
-            <span class="na"> timeMapSVG</span>
-            <span class="nt"> = {</span>
             <br>
-            &nbsp;&nbsp;<span class="s">country : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/suisse.json
-            <span class="na"> " </span>,
-            <br>
-            &nbsp;&nbsp;<span class="s">state : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/states_che.json
-            <span class="na"> " </span>,
-            <br>
-            &nbsp;&nbsp;<span class="s">city : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/cities_che.json
-            <span class="na"> " </span>
-
+            &nbsp;&nbsp;&nbsp;&nbsp;...
+            <br>&nbsp;&nbsp;<span class="nt"> ] </span>
             <span class="nt"><br>};</span>
-
         </div>
     </div>
 
@@ -159,7 +156,7 @@
     <div class="jumbotronCustom">
         <div class="container">
             <span class="nt">var</span>
-            <span class="na"> timeItemOptions</span>
+            <span class="na"> timeNetOptions</span>
             <span class="nt"> = {</span>
             <br>
             &nbsp;&nbsp;<span class="s">graph : </span> <span class="nt">{ </span>
@@ -180,17 +177,17 @@
             <br>
             &nbsp;&nbsp;<span class="nt"> }, </span>
             <br>
-            &nbsp;&nbsp;<span class="s">map : </span> <span class="nt">{ </span>
+            &nbsp;&nbsp;<span class="s">network : </span> <span class="nt">{ </span>
             <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> dragmoveData: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> sizeItem: </span>5,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomMap: </span>true
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipCountry: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipState: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipCity: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipItem: </span>true,
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomNetwork: </span>true
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> sizeNode: </span>10,
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> sizeLink: </span>2,
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipLink: </span>true,
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipNode: </span>true,
             <br>
             &nbsp;&nbsp;<span class="nt"> }, </span>
             <span class="nt"><br>};</span>
+
 
         </div>
     </div>
@@ -199,7 +196,7 @@
     <button type="button" class="btn btn-success"><a href="../customStyle.html">Custom Style</a></button>
 
     <h2>Examples</h2>
-    <button type="button" class="btn btn-success"><a href="timeMap.html">View Examples</a></button>
+    <button type="button" class="btn btn-success"><a href="timeNet.html">View Examples</a></button>
 
 
 </div>
