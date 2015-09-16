@@ -1,0 +1,74 @@
+/* ----- 7 ITEM *--*/
+.timeline{
+    background: #ffffff;
+    border: 1px solid #97B0F8;
+}
+
+.timeline .lineAxes{ stroke: black; }
+
+/* ----- 5 ITEM *--*/
+.zoneTime {
+    fill: #D5DDF6;
+}
+
+/* ----- 6 ITEM *--*/
+.infoZoneTime{
+    fill: wheat;
+}
+
+.zoneTimeLine{ cursor:pointer;}
+
+/* ----- 4 ITEM *--*/
+.lineActualTime{
+    fill: none;
+    stroke: red;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+/* ----- 3 ITEM *--*/
+.linePositionTime{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+/* ----- 3 ITEM *--*/
+.circlePositionTime{
+    fill: green;
+}
+
+.axis path, .axis line { fill: none; stroke: #000; shape-rendering: crispEdges;}
+
+.lineAxeX{ fill: none; stroke: #000; shape-rendering: crispEdges;}
+
+/* ----- 8 ITEM *--*/
+.backgroundNetwork{
+    fill: white;
+}
+
+/* ----- 1 ITEM *--*/
+.item{
+    stroke: steelblue;
+    stroke-width: 3px;
+    fill: white;
+    cursor: pointer;
+}
+.itemLine{ stroke: #cccccc; stroke-width: 2; }
+
+
+.textTool { padding: 5px; font: 12px sans-serif; text-align: center; margin: 2px;}
+
+.link{ cursor: pointer;}
+
+/* ----- 2 ITEM *--*/
+.pathLink{
+    stroke: #cccccc;
+}
+
+.d3-tip { line-height: 1; font-weight: bold; padding: 12px; background: rgba(0, 0, 0, 0.8); color: #fff;border-radius: 2px;}
+
+.d3-tip:after { box-sizing: border-box; display: inline; font-size: 10px; width: 100%; line-height: 1; color: rgba(0, 0, 0, 0.8); content: "\25BC"; position: absolute; text-align: center;}
+
+.d3-tip.n:after { margin: -1px 0 0 0; top: 100%; left: 0; }

@@ -10,3 +10,13 @@ a:hover, a:focus {
     color : #ffffff;
     text-decoration: none;
 }
+
+.download{
+    text-decoration: none;
+    color: #000088;
+}
+
+.download:hover{
+    text-decoration: none;
+    color: #0000FF;
+}

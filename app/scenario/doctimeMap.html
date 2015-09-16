@@ -5,47 +5,17 @@
     <title>FIVE TM</title>
 
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="../styles/configSite/started.css" />
     <link rel="stylesheet" href="../styles/configSite/menuNav.css" />
 
     <link rel="stylesheet" href="../styles/configSite/customPage.css"/>
-    <link rel="stylesheet" href="../styles/scenario/timeItem.css" />
+
+    <link rel="stylesheet" href="../bower_components/highlight/styles/railscasts.css"/>
 
 </head>
-
-<style>
-
-    body{
-        background: #ffffff;
-    }
-    .jumbotronCustom {
-        padding: 20px;
-        margin-bottom: 30px;
-        color: inherit;
-        background-color: #eee;
-        border-radius: 6px;
-    }
-
-    a.download {
-        color: blue;
-        text-decoration: none;
-    }
-
-    .nt {
-        color: #2f6f9f;
-    }
-
-    .na {
-        color: #4f9fcf;
-    }
-    .s {
-        color: #d44950;
-    }
-
-</style>
-
-
-
+    <script src="../bower_components/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 <body>
 
 <!--Navegation Menu -->
@@ -62,7 +32,6 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="../index.html">Home</a></li>
                 <li><a href="doctimeItem.html">TimeItem</a></li>
                 <li><a href="doctimeNet.html">TimeNet</a></li>
                 <li class="active"><a href="doctimeMap.html">TimeMap</a></li>
@@ -73,134 +42,83 @@
 
 <div class="container">
 
-    <!-- <h2>TimeItem</h2> -->
-
     <h2>Download</h2>
 
-    <a class="download" href="../framework/timeMap.js" download="timeMap.js">timeMap.js</a>
+    <a class="btn btn-large btn-primary" href="../download/FIVE_Timemap.zip" download="FIVE.zip">
+        <i class="icon-download-alt icon-large"></i>
+        TimeMap
+    </a>
 
     <h2>Implementation</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <!-- <script src="timeItem.js"></script> -->
-            <span class="nt">&lt;script</span>
-            <span class="na">src=</span>
-            <span class="s">&#34;timeMap.js&#34;</span>
-            <span class="nt"> &gt; </span>
-            <span class="nt">&lt;/script></span>
-        </div>
-    </div>
+    <pre><code class="html">
+    &lt;script src="timeMap.js"&gt; &lt;/script>
+    </code></pre>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <!-- <div id="timeItem"></div> -->
-            <span class="nt">&lt;div</span>
-            <span class="na">id=</span>
-            <span class="s">&#34;timeMap&#34;</span>
-            <span class="nt"> &gt; </span>
-            <span class="nt">&lt;/div></span>
-        </div>
-    </div>
+    <pre><code class="html">
+    &lt;link rel="stylesheet" href="timeMap.css"/&gt;
+    </code></pre>
+
+    <pre><code class="html">
+    &lt;div id="timeMap"&gt; &lt;/div>
+    </code></pre>
 
     <h2>Custom Data</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <span class="nt">var</span>
-            <span class="na"> timeMapData</span>
-            <span class="nt"> = [</span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
-            <span class="na"> id: </span>1,
-            <span class="na"> title: </span>Item,
-            <span class="na"> date: </span>01-01-2010,
-            <span class="na"> coordinates: </span><span class="na"> [ </span>7.063768, 46.613474<span class="na"> ] </span>
-            <span class="nt"> },</span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
-            <span class="na"> id: </span>2,
-            <span class="na"> title: </span>Item2,
-            <span class="na"> date: </span>01-05-2010,
-            <span class="na"> coordinates: </span><span class="na"> [ </span>7.155774, 46.802842<span class="na"> ] </span>
-            <span class="nt"> },</span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;...
-            <span class="nt"><br>];</span>
-        </div>
-    </div>
+    <pre><code class="javascript">
+    var timeMapData = [
+        {   "id": 1, "name": "Bulle", date: new Date(2014, 1, 10), "coordinates": [7.063768, 46.613474] },
+        {   "id": 2, "name": "Romont", date: new Date(2014, 4, 5), "coordinates": [6.914822, 46.691155] },
+        {   "id": 5, "name": "Fribourg Centre", date: new Date(2015, 4, 5), "coordinates": [7.158113, 46.803620] },
+        {   "id": 25, "name": "hepia", date: new Date(2015, 4, 5), "coordinates": [6.114048,46.205445 ] }
+    ];
+    </code></pre>
 
     <h2>Custom Map</h2>
-    <div class="jumbotronCustom">
-        <div class="container">
 
-            <span class="nt">var</span>
-            <span class="na"> timeMapSVG</span>
-            <span class="nt"> = {</span>
-            <br>
-            &nbsp;&nbsp;<span class="s">country : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/suisse.json
-            <span class="na"> " </span>,
-            <br>
-            &nbsp;&nbsp;<span class="s">state : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/states_che.json
-            <span class="na"> " </span>,
-            <br>
-            &nbsp;&nbsp;<span class="s">city : </span>
-            <span class="na"> " </span>../scripts/maps/suisse/cities_che.json
-            <span class="na"> " </span>
-
-            <span class="nt"><br>};</span>
-
-        </div>
-    </div>
+    <pre><code class="javascript">
+    var timeMapSVG = {
+        country : "/maps/suisse/suisse.json " ,
+        state : "/maps/suisse/states_che.json "
+        city : "/maps/suisse/cities_che.json "
+    };
+    </code></pre>
 
     <h2>Custom Options</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <span class="nt">var</span>
-            <span class="na"> timeItemOptions</span>
-            <span class="nt"> = {</span>
-            <br>
-            &nbsp;&nbsp;<span class="s">graph : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> width: </span>960,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> height: </span>500,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> responsive: </span>true
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <br>
-            &nbsp;&nbsp;<span class="s">timeLine : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> minDate: </span>05-01-2010,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> maxDate: </span>05-01-2015,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> showCurrentDate: </span>true
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> showActualDate: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> currentDate: </span>05-01-2013,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> actualDate: </span>05-04-2013,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomTimeLine: </span>true
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <br>
-            &nbsp;&nbsp;<span class="s">map : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> dragmoveData: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> sizeItem: </span>5,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomMap: </span>true
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipCountry: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipState: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipCity: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipItem: </span>true,
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <span class="nt"><br>};</span>
-
-        </div>
-    </div>
+    <pre><code class="javascript">
+    var timeMapOptions = {
+        graph : {
+            width: 880,
+            height: 460,
+            responsive: true
+        },
+        timeLine : {
+            minDate: new Date(2010, 05, 01),
+            maxDate: new Date(2015, 11, 31),
+            showCurrentDate: true,
+            showActualDate: true,
+            currentDate: new Date(2012, 11, 31),
+            actualDate: new Date(),
+            zoomTimeLine: true
+        },
+        map : {
+            dragmoveData: true,
+            sizeItem: 5,
+            zoomMap: true,
+            tipCountry: true,
+            tipState: true,
+            tipCity: true,
+            tipItem: true
+        }
+    };
+    </code></pre>
 
     <h2>Custom Style</h2>
-    <button type="button" class="btn btn-success"><a href="../customStyle.html">Custom Style</a></button>
+    <button type="button" class="btn btn-primary"><a href="../customStyle/customTimeMap.html">Custom Style</a></button>
 
     <h2>Examples</h2>
-    <button type="button" class="btn btn-success"><a href="timeMap.html">View Examples</a></button>
-
+    <button type="button" class="btn btn-primary"><a href="timeMap.html">View Examples</a></button>
 
 </div>
 

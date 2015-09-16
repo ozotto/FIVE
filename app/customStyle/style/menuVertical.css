@@ -1,0 +1,78 @@
+#leftMenu{
+    margin-left: -20px;
+    width: 190px;
+    padding-bottom: 20px;
+}
+
+#leftMenu .accordion-group {
+    margin-bottom: 0px;
+    border:0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+
+#leftMenu .accordion-heading {
+    height: 45px;
+    width: 190px;
+    border-bottom: 1px solid #adadad; /* inner stroke */
+    list-style-type:none;
+}
+
+#leftMenu .accordion-heading  a{
+    color: #337ab7;
+    font-size: large;
+    text-decoration:none;
+}
+
+#leftMenu .accordion-heading  a:hover{
+    color:#ccc
+}
+
+#leftMenu .accordion-heading .active {
+    width: 100%;
+    height: 34px;
+    border: 1px solid #5b5b5b; /* inner stroke */
+    background-color: #353535; /* layer fill content */
+}
+
+.titleGroup{
+    width: 100%;
+    height: 100%;
+    padding: 8px 5px 5px 5px;
+}
+
+.titleGroup:hover{
+    background-color: #717171;
+}
+
+.titleCustom{
+    display: block;
+    padding: 0px 10px;
+    color: #337ab7;
+    font-size: large;
+}
+
+.inputColor{
+    margin: 0 0 10px;
+}
+
+.subTitle{
+    margin: 0px;
+}
+
+.subItems{
+    list-style-type: none;
+    margin-left: -29px;
+    background-color: #FFFFFF;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+input[type=text]
+{
+    background-color: #BFBDBD;
+    border: solid 1px #000000;
+    height: 28px;
+    padding-left:10px;
+}

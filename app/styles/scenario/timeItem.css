@@ -67,24 +67,6 @@
     stroke-width: 2;
 }
 
-.tooltip{
-    position: absolute;
-    text-align: center;
-    min-width: 60px;
-    min-height: 30px;
-    background: lightsteelblue;
-    border: 1px solid black;
-    border-radius: 4px;
-    pointer-events: none;
-}
-
-.textTool {
-    padding: 5px;
-    font: 12px sans-serif;
-    text-align: center;
-    margin: 2px;
-}
-
 /* Categories   ------------------- */
 .rectCategories{
     fill: #D5DDF6;
@@ -96,6 +78,13 @@
 
 .tickCategorie{
     cursor: pointer;
+}
+
+.fillCategorie{
+    fill : #D5DDF6;
+}
+.zoneCategoriesHover{
+    fill : #4682B4;
 }
 
 .lineAxeY{

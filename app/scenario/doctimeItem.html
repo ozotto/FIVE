@@ -5,47 +5,17 @@
     <title>FIVE TM</title>
 
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="../styles/configSite/started.css" />
     <link rel="stylesheet" href="../styles/configSite/menuNav.css" />
 
     <link rel="stylesheet" href="../styles/configSite/customPage.css"/>
-    <link rel="stylesheet" href="../styles/scenario/timeItem.css" />
+
+    <link rel="stylesheet" href="../bower_components/highlight/styles/railscasts.css"/>
 
 </head>
-
-<style>
-
-    body{
-        background: #ffffff;
-    }
-    .jumbotronCustom {
-        padding: 20px;
-        margin-bottom: 30px;
-        color: inherit;
-        background-color: #eee;
-        border-radius: 6px;
-    }
-
-    a.download {
-        color: blue;
-        text-decoration: none;
-    }
-
-    .nt {
-        color: #2f6f9f;
-    }
-
-    .na {
-        color: #4f9fcf;
-    }
-    .s {
-        color: #d44950;
-    }
-
-</style>
-
-
-
+    <script src="../bower_components/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 <body>
 
 <!--Navegation Menu -->
@@ -62,7 +32,6 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="../index.html">Home</a></li>
                 <li class="active"><a href="doctimeItem.html">TimeItem</a></li>
                 <li><a href="doctimeNet.html">TimeNet</a></li>
                 <li><a href="doctimeMap.html">TimeMap</a></li>
@@ -73,117 +42,77 @@
 
 <div class="container">
 
-    <!-- <h2>TimeItem</h2> -->
-
     <h2>Download</h2>
 
-    <a class="download" href="../framework/timeItem.js" download="timeItem.js">timeItem.js</a>
+    <a class="btn btn-large btn-primary" href="../download/FIVE_Timeitem.zip" download="FIVE.zip">
+        <i class="icon-download-alt icon-large"></i>
+        TimeItem
+    </a>
 
     <h2>Implementation</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <!-- <script src="timeItem.js"></script> -->
-            <span class="nt">&lt;script</span>
-            <span class="na">src=</span>
-            <span class="s">&#34;timeItem.js&#34;</span>
-            <span class="nt"> &gt; </span>
-            <span class="nt">&lt;/script></span>
-        </div>
-    </div>
+    <pre><code class="html">
+    &lt;script src="timeItem.js"&gt; &lt;/script>
+    </code></pre>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <!-- <div id="timeItem"></div> -->
-            <span class="nt">&lt;div</span>
-            <span class="na">id=</span>
-            <span class="s">&#34;timeItem&#34;</span>
-            <span class="nt"> &gt; </span>
-            <span class="nt">&lt;/div></span>
-        </div>
-    </div>
+    <pre><code class="html">
+    &lt;link rel="stylesheet" href="timeItem.css"/&gt;
+    </code></pre>
+
+    <pre><code class="html">
+    &lt;div id="timeItem"&gt; &lt;/div>
+    </code></pre>
 
     <h2>Custom Data</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <span class="nt">var</span>
-            <span class="na"> timeItemData</span>
-            <span class="nt"> = {</span>
-            <br>
-            &nbsp;&nbsp;<span class="s">categories : </span> <span class="nt">[ </span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span><span class="na"> id: </span>1,<span class="na"> name: </span>Sport<span class="nt"> },</span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span><span class="na"> id: </span>2,<span class="na"> name: </span>News<span class="nt"> },</span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;...
-            <br>
-            &nbsp;&nbsp;<span class="nt"> ], </span>
-            <br>
-            &nbsp;&nbsp;<span class="s">items : </span> <span class="nt">[ </span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
-            <span class="na"> id: </span>1,
-            <span class="na"> title: </span>Item,
-            <span class="na"> date: </span>01-01-2010,
-            <span class="na"> categorie: </span>1
-            <span class="nt"> },</span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="nt"> {</span>
-            <span class="na"> id: </span>2,
-            <span class="na"> title: </span>Item2,
-            <span class="na"> date: </span>05-01-2013,
-            <span class="na"> categorie: </span>2
-            <span class="nt"> },</span>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;...
-            <br>&nbsp;&nbsp;<span class="nt"> ] </span>
-            <span class="nt"><br>};</span>
-        </div>
-    </div>
+    <pre><code class="javascript">
+    var timeItemData = {
+        categories: [
+            {id: 1, name: 'Sport'},
+            {id: 2, name: 'News'},
+            {id: 3, name: 'People'}
+        ],
+        items: [
+            {id: 1, title: "Top Level", date: new Date(2014, 1, 10), categorie: 3 },
+            {id: 2, title: "Level 2: A", date: new Date(2014, 2, 3), categorie: 1},
+            {id: 3, title: "Son of A", date: new Date(2014, 3, 14), categorie: 2}
+        ]
+    };
+    </code></pre>
 
     <h2>Custom Options</h2>
 
-    <div class="jumbotronCustom">
-        <div class="container">
-            <span class="nt">var</span>
-            <span class="na"> timeItemOptions</span>
-            <span class="nt"> = {</span>
-            <br>
-            &nbsp;&nbsp;<span class="s">graph : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> width: </span>960,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> height: </span>500,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> responsive: </span>true
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <br>
-            &nbsp;&nbsp;<span class="s">timeLine : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> minDate: </span>05-01-2010,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> maxDate: </span>05-01-2015,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> showCurrentDate: </span>true
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> showActualDate: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> currentDate: </span>05-01-2013,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> actualDate: </span>05-04-2013,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomTimeLine: </span>true
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <br>
-            &nbsp;&nbsp;<span class="s">items : </span> <span class="nt">{ </span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> dragmoveData: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> sizeItem: </span>10,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> zoomItem: </span>true
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> tipItem: </span>true,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na"> selectCategorie: </span>true,
-            <br>
-            &nbsp;&nbsp;<span class="nt"> }, </span>
-            <span class="nt"><br>};</span>
-        </div>
-    </div>
+    <pre><code class="javascript">
+    var timeItemOptions = {
+        graph : {
+            width: 880,
+            height: 460,
+            responsive: true
+        },
+        timeLine : {
+            minDate: new Date(2010, 05, 01),
+            maxDate: new Date(2015, 11, 31),
+            showCurrentDate: true,
+            showActualDate: true,
+            currentDate: new Date(2012, 11, 31),
+            actualDate: new Date(),
+            zoomTimeLine: false
+        },
+        items : {
+            dragmoveData: false,
+            sizeItem: 10,
+            zoomItem: false,
+            tipItem: true,
+            selectCategorie: false
+        }
+    };
+    </code></pre>
 
     <h2>Custom Style</h2>
-    <button type="button" class="btn btn-success"><a href="../customStyle.html">Custom Style</a></button>
+    <button type="button" class="btn btn-primary"><a href="../customStyle/customTimeItem.html">Custom Style</a></button>
 
     <h2>Examples</h2>
-    <button type="button" class="btn btn-success"><a href="timeItem.html">View Examples</a></button>
+    <button type="button" class="btn btn-primary"><a href="timeItem.html">View Examples</a></button>
 
 
 </div>

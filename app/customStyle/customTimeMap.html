@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FIVE TM</title>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../styles/configSite/dashboard.css" />
+    <link rel="stylesheet" href="../styles/configSite/started.css" />
+    <link rel="stylesheet" href="../styles/configSite/menuNav.css" />
+
+    <link rel="stylesheet" href="style/timeMap.css"/>
+    <link rel="stylesheet" href="style/menuVertical.css"/>
+
+</head>
+<script src="Frameworks/dataTimeMap.js"></script>
+<body>
+
+<!--Navegation Menu -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="../index.html">FIVE</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../scenario/timeItem.html">TimeItem</a></li>
+                <li><a href="../scenario/timeNet.html">TimeNet</a></li>
+                <li class="active"><a href="../scenario/timeMap.html">TimeMap</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+
+            <div class="accordion" id="leftMenu">
+
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#styleNetwork">
+                            <div class="titleGroup">Map</div>
+                        </a>
+                    </div>
+                    <div id="styleNetwork" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <ul class="subItems">
+                                <li>
+                                    <p class="subTitle">Items</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="itemsMap" class="color {pickerPosition:'right'}" value="FF0000" onchange=changeMapItem()>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p class="subTitle">Background</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="BackgroundMap" class="color {pickerPosition:'right'}" value="77DD77" onchange=changeMapBackground()>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p class="subTitle">Background Active</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="BackgroundMapActive" class="color {pickerPosition:'right'}" value="FDFD96" onchange=changeMapBackgroundActive()>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#styleTimeline">
+                            <div class="titleGroup">Timeline</div>
+                        </a>
+                    </div>
+                    <div id="styleTimeline" class="accordion-body collapse" style="height: 0px; ">
+                        <div class="accordion-inner">
+                            <ul class="subItems">
+                                <li>
+                                    <p class="subTitle">Position Line</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="timelinePositionline" class="color {pickerPosition:'right'}" value="3C8106" onchange=changeTimelinePositionLine()>
+                                    </p>
+                                </li>
+
+                                <li>
+                                    <p class="subTitle">Current Line</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="timelineCurrentline" class="color {pickerPosition:'right'}" value="ED462F" onchange=changeTimelineCurrentLine()>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p class="subTitle">Background Time</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="timelineBackgroungtime" class="color {pickerPosition:'right'}" value="D5DDF6" onchange=changeTimelineBackgroundTime()>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p class="subTitle">Background Info</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="timelineBackgrounginfo" class="color {pickerPosition:'right'}" value="F6DEB3" onchange=changeTimelineBackgroundInfo()>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#styleGraph">
+                            <div class="titleGroup">Graph</div>
+                        </a>
+                    </div>
+                    <div id="styleGraph" class="accordion-body collapse" style="height: 0px; ">
+                        <div class="accordion-inner">
+                            <ul class="subItems">
+                                <li>
+                                    <p class="subTitle">Border</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="graphBorder" class="color {pickerPosition:'right'}" value="97B0F8" onchange=changeGraphBorder()>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p class="subTitle">Background</p>
+                                    <p class="inputColor">
+                                        <input type="text" id="graphBackground" width="30px" class="color {pickerPosition:'right'}" value="FFFFFF" onchange=changeGraphBackground()>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <a class="btn btn-default" onclick=downloadStyle() role="button">Download</a>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Custom Style timeMap</h1>
+            <div id="timeMap"></div>
+        </div>
+    </div>
+</div>
+
+<script src="../bower_components/file-saver/FileSaver.js"></script>
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery/dist/jquery-ui.js"></script>
+<script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../bower_components/d3/d3.min.js" charset="utf-8"></script>
+<script src="../bower_components/d3-tip/index.js" charset="utf-8"></script>
+<script src="../bower_components/queue-async/queue.js"></script>
+<script src="../bower_components/queue-async/queue.js"></script>
+<script src="../bower_components/topojson/topojson.js"></script>
+<script src="Frameworks/timeMap.js"></script>
+<script src="../bower_components/jscolor/jscolor.js"></script>
+
+<script src="js/cssTimeMap.js"></script>
+
+
+</body>
+</html>

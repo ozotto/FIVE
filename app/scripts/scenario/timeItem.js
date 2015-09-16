@@ -66,6 +66,7 @@ function draw(){
     createLineTime();
     savePositionInitial();
 
+
 }
 
 //Functions Creation Graph ------------------------------------------------------------------------------

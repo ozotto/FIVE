@@ -153,6 +153,11 @@ function configureMap(){
         .defer(d3.json, "../scripts/maps/suisse/cities_che.json")   //Cities
         .await(drawMap);
 
+    queue()
+        .defer(d3.json, "suisse.json")
+        .defer(d3.json, "states_che.json")
+        .await(drawMap);
+
     zoomMap = d3.behavior.zoom()
         .scaleExtent([0.1, 1000])
         .on("zoom", redraw);
@@ -188,6 +193,8 @@ function drawMap(error, countryData, statesData, citiesData) {
     //Country
     map.append("g")
         .attr("id", "countrie")
+        .data(country)
+        .attr("d", path)
         .selectAll("path")
         .data(country)
         .enter()

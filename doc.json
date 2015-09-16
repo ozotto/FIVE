@@ -1,0 +1,2 @@
+topojson --id-property adm1_cod_1 -p name -o states.topo.json states.json
+Tom Noda

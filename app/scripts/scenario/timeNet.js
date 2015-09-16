@@ -51,9 +51,9 @@ var width = $("#timeNet").width(),
 function draw(){
 
     configureParamsGraph();
-    configureTimeLine();
-    configureNetwork();
-    createNetwork();
+   configureTimeLine();
+   configureNetwork();
+   createNetwork();
     createLineTime();
 
 }
@@ -69,7 +69,7 @@ function configureParamsGraph(){
     /*graph = d3.select("#timeNet")
         .append("svg")
         .attr("width", widthGraph)
-        .attr("height", heightGraph)
+        .attr("height", heightGraph);
         .attr("class","timeline"); */
 
     graph = d3.select("#timeNet")
@@ -123,6 +123,7 @@ function configureNetwork(){
     //sourceData = networkData[0];
     sourceData = networkFriends[0];
     items = sourceData.nodes;
+    links = sourceData.links;
 
     sourceData.links.forEach(function(e) {
         var sourceNode = sourceData.nodes.filter(function(n) { return n.id === e.source; })[0],

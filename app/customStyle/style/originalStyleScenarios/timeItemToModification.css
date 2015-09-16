@@ -1,0 +1,130 @@
+/*-- 9 Value  ---*/
+.timeline{ background: #ffffff; border: 1px solid #97B0F8; }
+
+.timeline .lineAxes{ stroke: black; }
+
+/*-- 6 Value  ---*/
+.zoneTime {
+    fill: #D5DDF6;
+}
+
+/*-- 8 Value  ---*/
+.infoZoneTime{
+    fill: wheat;
+}
+
+.zoneTimeLine{cursor:pointer;}
+
+/*-- 5 Value  ---*/
+.lineActualTime{
+    fill: none;
+    stroke: red;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+/*-- 4 Value  ---*/
+.linePositionTime{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+/*-- 4 Value  ---*/
+.circlePositionTime{
+    fill: green;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.lineAxeX{
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.dataItem{
+    cursor: pointer;
+}
+
+/*-- 3 Value  ---*/
+.item{
+    fill: steelblue;
+    cursor: pointer;
+}
+.itemLine{
+    stroke: #cccccc;
+    stroke-width: 2;
+}
+    
+/*-- 7 Value  ---*/
+.rectCategories{
+    fill: #D5DDF6;
+}
+
+.textCategories{
+    fill: black;
+}
+
+.tickCategorie{
+    cursor: pointer;
+}
+
+/*-- 1 Value  ---*/
+.fillCategorie{
+    fill : #D5DDF6;
+}
+
+/*-- 2 Value  ---*/
+.zoneCategoriesHover{
+    fill : #4682B4;
+}
+
+.lineAxeY{
+    stroke: none !important;
+}
+
+.lineYaxi {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.lineDivCate{
+    stroke: #cccccc !important;
+    fill-opacity: 0.5;
+    stroke-width: 1;
+}
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
