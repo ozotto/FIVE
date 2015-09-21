@@ -28,12 +28,12 @@
         controlOptions();
         configureParamsGraph();
         configureTimeLine();
-        createLineTime();
         controlData();
         if(checkData){
 
             configureNetwork();
             createNetwork();
+            createLineTime();
 
         }else{
             showMsg();
@@ -97,6 +97,8 @@
         sourceData = timeNetData;
         items = sourceData.nodes;
 
+        var targetInLink, sourceInLink;
+
         sourceData.links.forEach(function(e) {
             var sourceNode = sourceData.nodes.filter(function(n) { return n.id === e.source; })[0],
                 targetNode = sourceData.nodes.filter(function(n) { return n.id === e.target; })[0];
@@ -107,7 +109,14 @@
             var countSource = 0, countTarget = 0;
             sourceData.links.forEach(function(n) { if(n.source === e.id) countSource++ });
             sourceData.links.forEach(function(n) { if(n.target === e.id) countTarget++ });
-            countNode.push({id: e.id, count_source: countSource, count_target: countTarget, sourceVisible: 0, targetVisible: 0});
+
+            targetInLink = searchIdTarget(e.id, links);
+            sourceInLink = searchIdSource(e.id, links);
+
+            if(sourceInLink || targetInLink){
+                countNode.push({id: e.id, count_source: countSource, count_target: countTarget, sourceVisible: 0, targetVisible: 0});
+            }
+
         });
 
         if(sourceData.nodes.length > 0 && links.length > 0) checkData = true;
@@ -135,7 +144,7 @@
 
             $(window).resize(function() {
                 var width = $("#timeNet").width();
-                timeNet.graph.attr("width", width);
+                timeNet.graph.attr("width", width );
                 timeNet.graph.attr("height", width * aspect);
             });
 
@@ -223,14 +232,15 @@
 
     function makeInfoTimeLine(){
 
-        var pos1, pos2, pos3;
+        var pos1, pos2, pos3, sizeText;
+        var cal1, cal2;
 
-        pos1 = 0 + 5;
-        pos2 = (timeNet.options.graph.width / 3) + 5;
-        pos3 = ((timeNet.options.graph.width / 3) + pos2) + 5;
+        cal1 = (timeNet.options.graph.width * 40) / 100;
+        cal2 = (timeNet.options.graph.width * 82) / 100;
 
-        pos2 = 380;
-        pos3 = 800;
+        pos1 = 5;
+        pos2 = cal1 + 5;
+        pos3 = cal2 + 5;
 
         infoTimeLine = timeNet.zoneTimeLine.append("g")
             .attr("class", "infoTimeline");
@@ -267,6 +277,7 @@
 
         infoEndDate.append("text").attr("class", "textEndDate")
             .text(function(d) { return "End Date: "+formatDate(valuesX.domain()[1]);  });
+
     }
     function makeInteractionTimeLine(){
         timeLineZone = timeNet.zoneTimeLine.append("g")
@@ -317,6 +328,7 @@
 
     //---- Creation Configuration Network
     function configureNetwork(){
+        var sourceInLink, targetInLink;
 
         force = d3.layout.force()
             .charge(-120)
@@ -328,30 +340,36 @@
             .start();
 
         items.forEach(function(e){
-            random = Math.floor(Math.random() * 380 ) + 10;
+            random = Math.floor(Math.random() * (timeNet.options.timeLine.posYTimeline/2) ) + 10;
             randomMin = random - 20;
             randomMax = random + 20;
             if(valOld >= randomMin && valOld <= randomMax) random = Math.floor(Math.random() * 380 ) + 10;
-            if(random > 410) random = Math.floor(Math.random() * 380 ) + 10;
+            if(random > timeNet.options.timeLine.posYTimeline) random = Math.floor(Math.random() * (timeNet.options.timeLine.posYTimeline/2) ) + 10;
 
-            items2.push({
-                date: e.date,
-                id: e.id,
-                index: e.index,
-                title: e.title,
-                px: e.px,
-                py: random,
-                weight: e.weight,
-                x:e.x,
-                y: random
-            });
-            valOld = random
+            targetInLink = searchIdTarget(e.id, links);
+            sourceInLink = searchIdSource(e.id, links);
+
+            if(sourceInLink || targetInLink){
+                items2.push({
+                    date: e.date,
+                    id: e.id,
+                    index: e.index,
+                    title: e.title,
+                    px: e.px,
+                    py: random,
+                    weight: e.weight,
+                    x:e.x,
+                    y: random
+                });
+                valOld = random
+            }
+
         });
 
         links.forEach(function(e){
 
             var sourceNodeData = items2.filter(function(n) { return n.id === e.source.id; })[0],
-                targetNodeData = items2.filter(function(n) { return n.id === e.target.id; })[0]
+                targetNodeData = items2.filter(function(n) { return n.id === e.target.id; })[0];
 
             links2.push({
                 date: e.date,
@@ -366,14 +384,21 @@
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Item:</strong> <span style='color:red'>" + d.title + "</span>";
+                var date;
+                date = formatDate(d.date);
+                return "<span style='color:red'>" + d.title + "</span>" +
+                    "<p>"+ date +"</p>";
+
             });
 
         timeNet.tipLink = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Item:</strong> <span style='color:red'>" + d.date + "</span>";
+                var date;
+                date = formatDate(d.date);
+                return "<span style='color:red'>" + d.source.title +" - "+ d.target.title + "</span>" +
+                    "<p>"+ date +"</p>";
             });
 
     }
@@ -393,7 +418,8 @@
 
         graphLinks = timeNet.zoneNetwork.append("g")
             .attr("class", "links")
-            .attr("transform", "translate(0,20)");
+            //.attr("transform", "translate(0,20)");
+            .attr("transform", "translate(0,0)");
 
         graphItems = timeNet.zoneNetwork.append("g")
             .attr("class", "items");
@@ -415,13 +441,7 @@
             .attr("class", "item")
             .attr("id", function(d){ return d.id; } )
             .attr("visible", false)
-            .call(timeNet.tipItem)
-            .on('mouseover', function(d){
-                if(timeNet.options.network.tipNode) timeNet.tipItem.show(d);
-            })
-            .on("mouseout", function(d){
-                if(timeNet.options.network.tipNode) timeNet.tipItem.hide(d);
-            });
+            .call(timeNet.tipItem);
     }
 
     function makeLinksNetwork(){
@@ -449,7 +469,8 @@
             .attr("r", timeNet.options.network.sizeNode)
             .attr('stroke-width',2)
             .attr("cx", function(d) { return valuesX(d.date); })
-            .attr("cy", function(d) { return (d.y +20 ); })
+            //.attr("cy", function(d) { return (d.y +20 ); })
+            .attr("cy", function(d) { return (d.y ); })
             .on('mouseover', mouseOverNode)
             .on('mouseout', mouseOutNode);
 
@@ -470,8 +491,16 @@
         var dateCurrent, ctlVisible, ctlVisibleLink;
         var ctlSource, ctlTarget, itemValue;
 
+        var itemSourceInsert, itemTargetInsert;
+
         dateCurrent = valuesX.invert(xCoord);
         dateCurrent = formatDate(dateCurrent);
+
+        if(timeNet.options.timeLine.actualDate > valuesX.invert(xCoord)){
+            d3.selectAll(".backgroundNetwork").style("fill", "#ffffff");
+        }else{
+            d3.selectAll(".backgroundNetwork").style("fill", "#f8f8f8");
+        }
 
 
         d3.select(".textActualDate").text(function(d) { return "Current Date: "+dateCurrent;  });
@@ -488,6 +517,8 @@
                     //Control date items Target and Source
                     if( e.source.date <= valuesX.invert(xCoord) && e.target.date <= valuesX.invert(xCoord) ){
 
+
+
                         //Insert Items
                         d3.selectAll(".item").each(function (valuesItem) {
                             ctlVisible = d3.select(this).attr("visible");
@@ -503,9 +534,12 @@
                                     .attr("r", timeNet.options.network.sizeNode)
                                     .attr('stroke-width',2)
                                     .attr("cx", function(d) { return valuesX(d.date); })
-                                    .attr("cy", function(d) { return (d.y +20 ); })
+                                    //.attr("cy", function(d) { return (d.y +20 ); })
+                                    .attr("cy", function(d) { return (d.y ); })
                                     .on('mouseover', mouseOverNode)
                                     .on('mouseout', mouseOutNode);
+
+                                itemSourceInsert = e.source.id;
 
                             }
 
@@ -520,10 +554,12 @@
                                     .attr("r",timeNet.options.network.sizeNode)
                                     .attr('stroke-width',2)
                                     .attr("cx", function(d) { return valuesX(d.date); })
-                                    .attr("cy", function(d) { return (d.y +20 ); })
+                                    //.attr("cy", function(d) { return (d.y +20 ); })
+                                    .attr("cy", function(d) { return (d.y ); })
                                     .on('mouseover', mouseOverNode)
                                     .on('mouseout', mouseOutNode);
 
+                                itemTargetInsert = e.target.id;
                             }
 
 
@@ -536,26 +572,32 @@
                             //Link
                             if (e.id == valuesLink.id && ctlVisibleLink == "false" ) {
 
-                                d3.select(this)
-                                    .attr("visible", true)
-                                    .append("line")
-                                    .attr("class", "pathLink")
-                                    .attr("id", function(d) { return d.id; })
-                                    .attr("x1", function(d) { return valuesX(d.source.date); })
-                                    .attr("y1", function(d) { return d.source.y; })
-                                    .attr("x2", function(d) { return valuesX(d.target.date); })
-                                    .attr("y2", function(d) { return d.target.y; })
-                                    .style("stroke-width", timeNet.options.network.sizeLink);
+                                //if(itemSourceInsert == e.source.id && itemTargetInsert == e.target.id ){
 
-                                //Count items visible
-                                countNode.forEach(function(infoNode){
-                                    if(infoNode.id == e.source.id)
-                                        infoNode.sourceVisible = infoNode.sourceVisible + 1;
+                                    d3.select(this)
+                                        .attr("visible", true)
+                                        .append("line")
+                                        .attr("class", "pathLink")
+                                        .attr("id", function(d) { return d.id; })
+                                        .attr("x1", function(d) { return valuesX(d.source.date); })
+                                        .attr("y1", function(d) { return d.source.y; })
+                                        .attr("x2", function(d) { return valuesX(d.target.date); })
+                                        .attr("y2", function(d) { return d.target.y; })
+                                        .style("stroke-width", timeNet.options.network.sizeLink);
 
-                                    if(infoNode.id == e.target.id)
-                                        infoNode.targetVisible = infoNode.targetVisible + 1;
+                                    //Count items visible
+                                    countNode.forEach(function(infoNode){
+                                        if(infoNode.id == e.source.id)
+                                            infoNode.sourceVisible = infoNode.sourceVisible + 1;
 
-                                })
+                                        if(infoNode.id == e.target.id)
+                                            infoNode.targetVisible = infoNode.targetVisible + 1;
+
+                                    });
+
+                                //}
+
+
 
                             }
 
@@ -568,62 +610,81 @@
 
                     d3.selectAll(".link").each(function (valuesLink) {
                         ctlVisibleLink = d3.select(this).attr("visible");
+
                         if (e.id == valuesLink.id && ctlVisibleLink == "true" ) {
 
-                            d3.select(this).attr("visible", false);
+                            var ItemToDelete = d3.select(this);
+                            var dataTarget, dataSource;
+                            var ctlTargetItem, ctlSourceItem;
+
+
+                            //Delete Item
+                            ItemToDelete.attr("visible", false);
 
                             //Delete Link
                             d3.selectAll(".pathLink").each(function(val){
+
+                                //Look target
+                                dataTarget = val.target;
+                                dataSource = val.source;
+
                                 if(e.id == val.id){
-                                    d3.select(this).remove();
+                                    if(val.date > valuesX.invert(xCoord)){
+                                        d3.select(this).remove();
+
+                                        //Count items visible
+                                        countNode.forEach(function(infoNode){
+                                            if(infoNode.id == e.source.id)
+                                                infoNode.sourceVisible = infoNode.sourceVisible - 1;
+                                            if(infoNode.id == e.target.id)
+                                                infoNode.targetVisible = infoNode.targetVisible - 1;
+                                        });
+                                    }
+
+                                    ctlTargetItem = searchById(dataTarget.id, countNode);
+                                    if(ctlTargetItem.sourceVisible <= 0 && ctlTargetItem.targetVisible <= 0){
+                                        d3.selectAll(".item").each(function (valuesItem) {
+                                            itemValue = this;
+                                            if(ctlTargetItem.id == valuesItem.id){
+                                                d3.select(itemValue).attr("visible", false);
+                                            }
+                                        });
+
+                                        d3.selectAll(".node").each(function(values_nodes){
+                                            if(ctlTargetItem.id == values_nodes.id){
+                                                d3.select(this).remove();
+
+
+                                            }
+                                        });
+
+
+                                    }
+
+                                    ctlSourceItem = searchById(val.source.id, countNode);
+                                    if(ctlSourceItem.sourceVisible <= 0 && ctlSourceItem.targetVisible <= 0){
+
+                                        d3.selectAll(".item").each(function (valuesItem) {
+                                            itemValue = this;
+                                            if (ctlSourceItem.id == valuesItem.id){
+                                                d3.select(itemValue).attr("visible", false);
+                                            }
+                                        });
+
+                                        d3.selectAll(".node").each(function(values_nodes) {
+                                            if (ctlSourceItem.id == values_nodes.id) {
+                                                d3.select(this).remove();
+
+                                            }
+                                        });
+
+                                    }
+
                                 }
-                            });
-
-                            //Count items visible
-                            countNode.forEach(function(infoNode){
-                                if(infoNode.id == e.source.id)
-                                    infoNode.sourceVisible = infoNode.sourceVisible - 1;
-
-                                if(infoNode.id == e.target.id)
-                                    infoNode.targetVisible = infoNode.targetVisible - 1;
-
-                            });
-
-                            //Delete items
-                            d3.selectAll(".item").each(function (valuesItem) {
-                                itemValue = this;
-                                ctlVisible = d3.select(this).attr("visible");
-
-                                countNode.forEach(function(infoNode){
-                                    if(infoNode.id == e.source.id) ctlSource = infoNode.sourceVisible;
-                                    if(infoNode.id == e.target.id) ctlTarget = infoNode.targetVisible;
-
-                                    //Source
-                                    if (e.source.id == valuesItem.id && ctlVisible == "true" && ctlSource <= 0) {
-                                        d3.select(itemValue).attr("visible", false);
-
-                                        d3.selectAll(".node").each(function(val){
-                                            if(e.source.id == val.id){
-                                                d3.select(this).remove();
-                                            }
-                                        });
-                                    }
-
-                                    //Target
-                                    if (e.target.id == valuesItem.id && ctlVisible == "true" && ctlTarget <= 0) {
-                                        d3.select(itemValue).attr("visible", false);
-
-                                        d3.selectAll(".node").each(function(val){
-                                            if(e.target.id == val.id){
-                                                d3.select(this).remove();
-                                            }
-                                        });
-                                    }
-
-                                });
 
 
                             });
+
 
                         }
 
@@ -632,6 +693,30 @@
                 }
             });
 
+        }
+    }
+
+    function searchById(valueId, myArray){
+        for (var i=0; i < myArray.length; i++) {
+            if (myArray[i].id === valueId) {
+                return myArray[i];
+            }
+        }
+    }
+
+    function searchIdTarget(valueId, myArray){
+        for (var i=0; i < myArray.length; i++) {
+            if (myArray[i].target.id === valueId) {
+                return myArray[i];
+            }
+        }
+    }
+
+    function searchIdSource(valueId, myArray){
+        for (var i=0; i < myArray.length; i++) {
+            if (myArray[i].source.id === valueId) {
+                return myArray[i];
+            }
         }
     }
 
@@ -681,7 +766,9 @@
 
     function mouseOverNode(d){
 
-        d3.selectAll(".node").sort(function (a, b) {
+        if(timeNet.options.network.tipNode) timeNet.tipItem.show(d);
+
+        d3.selectAll(".item").sort(function (a, b) {
             if (a.id != d.id) return -1;
             else return 1;
         });
@@ -717,9 +804,12 @@
     }
 
     function mouseOutNode(d){
+
         d3.select(this)
             .style("fill", "white")
             .style("stroke", "steelblue");
+
+        if(timeNet.options.network.tipNode) timeNet.tipItem.hide(d);
 
         sourceData.links.forEach(function(e) {
             //Links Source

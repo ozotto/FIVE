@@ -79,7 +79,9 @@
 }
 
 .pathItems{
-    fill: #FF0000;
+    /*fill: red;*/
+    stroke: steelblue;
+    fill: white;
 }
 
 .item{
@@ -90,13 +92,6 @@
     cursor: pointer;
 }
 
-.fillState{
-    fill : #77DD77;
-}
-
-.fillStateHover{
-    fill: #FDFD96;
-}
 div.tooltip {
     color: #222;
     background: #fff;

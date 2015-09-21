@@ -1,5 +1,6 @@
 /**
  * Created by Oscar on 04.06.15.
+ * Mofify original Framework to custom Style
  */
 (function() {
 
@@ -43,8 +44,9 @@
         if(checkData){
 
             configureCategories();
-            createItems();
             configureTimeLine();
+            createItems();
+
             createCategories();
             createLineTime();
             savePositionInitial();
@@ -128,6 +130,13 @@
             NameItem = value.title;
             dataItemsGraph.push({"idItem": idItem, "idCat": idCat, "nameCat":nameCat, "dateItem": dateItem, "NameItem":NameItem})
         });
+
+        /*
+        dataItemsGraph.forEach(function(value){
+            domainCategoriesGraph.push(value.idCat);
+            dataCategoriesGraph.push({ id:value.idCat, name:value.nameCat });
+        });
+        */
 
         if(dataCategoriesGraph.length > 0 && dataItemsGraph.length > 0 ) checkData = true;
 
@@ -248,12 +257,16 @@
 
         var pos1, pos2, pos3;
 
-        pos1 = 0 + 5;
-        pos2 = (widthLineTime / 3) + 5;
-        pos3 = ((widthLineTime / 3) + pos2) + 5;
+        var cal1, cal2;
 
-        pos2 = 360;
-        pos3 = 690;
+        cal1 = (widthLineTime * 40) / 100;
+        cal2 = (widthLineTime * 78) / 100;
+
+        pos1 = 5;
+        pos2 = cal1 + 5;
+        pos3 = cal2 + 5;
+
+
 
         infoTimeLine = timeItem.zoneTimeLine.append("g")
             .attr("class", "infoTimeline");
@@ -308,6 +321,7 @@
                 dragmovePosition(xCoord);
             });
         }
+
     }
     function makePositionActualTime(){
         actualLineTime = timeLineZone.append("g")
@@ -347,7 +361,10 @@
         rangeCategorieInitial = timeItem.options.graph.height - timeLineHeight - heightCategorie;
         heightLastCategorie = rangeCategorieInitial / (domainCategoriesGraph.length - 1);
 
-        widhCategories = arrayMax(dataCategoriesGraph) * 20; //20 for caracter space
+
+        widhCategories = (arrayMax(dataCategoriesGraph) * 100) / 10;
+        if(widhCategories < 100) widhCategories = 100;
+        //widhCategories = arrayMax(dataCategoriesGraph); //20 for caracter space
 
         valuesY = d3.scale.ordinal()
             .domain(domainCategoriesGraph)
@@ -361,7 +378,10 @@
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Item:</strong> <span style='color:red'>" + d.NameItem + "</span>";
+                var date;
+                date = formatDate(d.dateItem);
+                return "<span style='color:red'>" + d.NameItem + "</span>" +
+                    "<p>"+ date +"</p>";
             });
 
     }
@@ -375,12 +395,16 @@
         timeItem.zoneItem = timeItem.graph.append("g")
             .attr("class", "zoneItem")
             .attr("transform", "translate(" + widhCategories + ",0)");
+            if(timeItem.options.timeLine.zoomTimeLine){
+                timeItem.zoneItem.call(zoomTimeLine);
+            }
 
         item = timeItem.zoneItem.selectAll("item")
             .data(dataItemsGraph);
 
         itemEnter = item.enter().append("g")
-            .attr("class", "dataItem")
+            //.attr("class", "dataItem")
+            .attr("class", function(d){ return "dataItem "+ "catID"+d.idCat })
             .attr("idItem", function(d){ return d.idItem })
             .attr('clicked', false)
             .attr('visible', false)
@@ -411,12 +435,14 @@
             .attr('id',function(d) { return d.idItem;})
             .attr('idCat', function(d){ return d.idCat; })
             .attr("fill", "#ffffff")
-            .on('mouseover', function(d){
+            .on('mouseover', mouseOverNode)
+            .on('mouseout', mouseOutNode);
+/*            .on('mouseover', function(d){
                 d3.select(this).style("fill","orange")
             })
             .on('mouseout', function(d){
                 d3.select(this).style("fill","steelblue")
-            });
+            });*/
     }
 
     function createCategories(){
@@ -459,27 +485,14 @@
         zoneCategories.selectAll(".tickCategorie")
             .selectAll("line").remove();
 
-
         //Config Zone Categorie
         zoneCategories.selectAll(".tickCategorie")
             .append("rect")
-            .attr("class", function(d) { return "zoneCategorie"+d;  })
+            .attr("class", function(d) { return "zoneCategorie"+d+" fillCategorie";  })
             .attr("width", widhCategories)
             .attr("height", heightCategorie)
             .attr("x", -widhCategories)
-            .attr("y", 1)
-            .attr("fill", "#D5DDF6");
-
-        zoneCategories.selectAll(".tickCategorie")
-            .append("text")
-            .attr("class", "textCategorie")
-            .attr("y", heightCategorie/2)
-            .attr("x", -85)
-            .style("text-anchor", "start")
-            .text(function(d) {
-                var nameCategorie = searchNameCategorie(d);
-                return nameCategorie;
-            });
+            .attr("y", 1);
 
         //Config Line Limit Categorie
         zoneCategories.selectAll(".tickCategorie")
@@ -498,6 +511,17 @@
             .attr("x2", (timeItem.options.graph.width - widhCategories))
             .attr("y2", 0);
 
+        zoneCategories.selectAll(".tickCategorie")
+            .append("text")
+            .attr("class", "textCategorie")
+            .attr("y", heightCategorie/2)
+            .attr("x", -85)
+            .style("text-anchor", "start")
+            .text(function(d) {
+                var nameCategorie = searchNameCategorie(d);
+                return nameCategorie;
+            });
+
         zoneCategories.selectAll("g.y.axis path")
             .attr("class", "lineAxeY");
 
@@ -507,9 +531,16 @@
     function dragmovePosition(xCoord) {
 
         var dateCurrent, ctlVisible;
+        var randomPos
 
         dateCurrent = valuesX.invert(xCoord);
         dateCurrent = formatDate(dateCurrent);
+
+        if(timeItem.options.timeLine.actualDate > valuesX.invert(xCoord)){
+            d3.select(".timeline").style("background", "#ffffff");
+        }else{
+            d3.select(".timeline").style("background", "#f8f8f8");
+        }
 
         d3.select(".textActualDate")
             .text(function(d) { return "Current Date: "+dateCurrent;  });
@@ -530,6 +561,9 @@
                             if(isClicked == true){
 
                                 if(catSelected == valuesItem.idCat && ctlVisible == "false"){
+
+                                    randomPos = Math.floor((Math.random() * (timeItem.options.timeLine.posYTimeline - (sizeRadio * 2) )) + sizeRadio);
+
                                     d3.select(this)
                                         .attr("visible", true)
                                         .append("circle")
@@ -537,20 +571,15 @@
                                         .attr("cx", function(d){
                                             return xpos = valuesX(new Date(d.dateItem));
                                         } )
-                                        .attr("cy", function(d){
-                                            return ypos = valuesY(d.idCat) + (heightLastCategorie /2);
-                                        } )
+                                        .attr("cy", randomPos)
                                         .attr("r",sizeRadio)
                                         .attr('stroke-width',2)
                                         .attr('id',function(d) { return d.idItem;})
                                         .attr('idCat', function(d){ return d.idCat; })
                                         .attr("fill", "#ffffff")
-                                        .on('mouseover', function(d){
-                                            d3.select(this).style("fill","orange")
-                                        })
-                                        .on('mouseout', function(d){
-                                            d3.select(this).style("fill","steelblue")
-                                        });
+                                        .on('mouseover', mouseOverNode)
+                                        .on('mouseout', mouseOutNode);
+
                                 }
 
                             }else{
@@ -570,12 +599,15 @@
                                     .attr('id',function(d) { return d.idItem;})
                                     .attr('idCat', function(d){ return d.idCat; })
                                     .attr("fill", "#ffffff")
+                                    .on('mouseover', mouseOverNode)
+                                    .on('mouseout', mouseOutNode);
+                                /*
                                     .on('mouseover', function(d){
                                         d3.select(this).style("fill","orange")
                                     })
                                     .on('mouseout', function(d){
                                         d3.select(this).style("fill","steelblue")
-                                    });
+                                    });*/
 
                             }
                         }
@@ -603,6 +635,32 @@
             });
 
         }
+
+    }
+
+    function mouseOverNode(d){
+
+        //console.log(d);
+        //d3.selectAll(".dataItem").sort(function (a, b) {
+        d3.selectAll(".catID"+ d.idCat).sort(function (a, b) {
+            if(d.idCat == a.idCat){
+                if (a.idItem != d.idItem) return -1;
+                else return 1;
+            }
+
+        });
+
+        d3.select(this)
+            .style("fill", "orange")
+            .style("stroke", "black");
+
+    }
+
+    function mouseOutNode(d){
+
+        d3.select(this)
+            .style("fill", "white")
+            .style("stroke", "steelblue");
 
     }
 
@@ -667,32 +725,31 @@
     function mouseOverCategorie(d){
 
         var tickCategorie = ".zoneCategorie"+ d;
-        var idCat;
+        var idCat = ".item_idCat"+ d;
 
+        //Line To Framework
         zoneCategories.select(tickCategorie)
-            .transition()
-            .attr("fill","steelblue");
+            .attr("class", function(d) { return "zoneCategorie"+d+" zoneCategoriesHover";  });
 
-        idCat = ".item_idCat"+ d;
         d3.selectAll(idCat)
-            .style("fill","orange");
+            .style("fill","orange")
+            .style("stroke", "black");
 
     }
 
     function mouseOutCategorie(d){
 
         var tickCategorie = ".zoneCategorie"+ d;
-        var idCat;
+        var idCat = ".item_idCat"+ d;
 
+        //Line To Framework
         zoneCategories.select(tickCategorie)
-            .transition()
-            .attr("fill","#D5DDF6");
-
-        idCat = ".item_idCat"+ d;
+            .attr("class", function(d) { return "zoneCategorie"+d+" fillCategorie";  });
 
         timeItem.zoneItem.selectAll(idCat)
             .transition()
-            .style("fill","steelblue");
+            .style("fill", "white")
+            .style("stroke", "steelblue");
 
     }
 
@@ -702,6 +759,8 @@
         var itemXpos, itemYpos, posZoneX, posZoneY, newPosY;
         countClicked++;
         var clicked;
+
+        var randomPos, valuesRandom = [], ctlRandom;
 
         if(timeItem.options.items.selectCategorie){
 
@@ -747,7 +806,8 @@
                         if(itemYpos > posZoneY) newPosY = itemYpos - heightLastCategorie;
 
                         d3.select(this)
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .delay(delayTransition)
                             .attr("transform", "translate("+itemXpos+","+newPosY+")")
                             .style("visibility","hidden");
@@ -755,27 +815,32 @@
                     }else if(value == d){
 
                         d3.select(this)
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .delay(delayTransition)
                             .attr("transform", "translate("+itemXpos+",0)");
 
                         var idRect = ".zoneCategorie"+d;
                         d3.select(this).select(idRect)
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .attr("height", posYTimeline );
 
                         d3.select(this).select(".lineAxeYitems")
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .attr("y1", posYTimeline )
                             .attr("y2", posYTimeline );
 
                         d3.select(this).select(".lineDivCate")
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .delay(delayTransition)
                             .attr("x2", 0 );
 
                         d3.select(this).select(".textCategorie")
-                            .transition().duration(800)
+                            //.transition().duration(800)
+                            .transition()
                             .delay(delayTransition)
                             .attr("y", posYTimeline/2 );
 
@@ -797,20 +862,34 @@
                         if(posZoneY < itemYpos) newPosY = itemYpos;
 
                         d3.select(this)
-                            .transition().duration(800)
-                            .delay(delayTransition)
+                            //.transition().duration(800)
+                            .transition()
+                            //.delay(delayTransition)
                             .attr("cx", posZoneX)
                             .attr("cy", newPosY)
                             .style("opacity",0)
 
                     }else if(catItem == d){
-                        var randomPos;
-                        randomPos = Math.floor((Math.random() * (posYTimeline - 50 )) + 50);
-                        //Verify le random
 
+                        //randomPos = Math.floor((Math.random() * (posYTimeline - 50 )) + 50);
+                        //timeItem.options.timeLine.posYTimeline
+                        //sizeRadio
+                        //Verify le random
+                        randomPos = Math.floor((Math.random() * (timeItem.options.timeLine.posYTimeline - (sizeRadio * 2) )) + sizeRadio);
+/*
+                        valuesRandom.push({
+                            id:value.idItem, posx: posZoneX, posy:randomPos
+                        });
+
+                        ctlRandom = searchByPosition(sizeRadio,posZoneX, randomPos, valuesRandom);
+                        if(ctlRandom){
+                            randomPos = Math.floor((Math.random() * (timeItem.options.timeLine.posYTimeline - (sizeRadio * 2) )) + sizeRadio);
+                        }
+*/
                         d3.select(this)
-                            .transition().duration(800)
-                            .delay(delayTransition)
+                            //.transition().duration(800)
+                            .transition()
+                            //.delay(delayTransition)
                             .attr("cx", posZoneX)
                             .attr("cy", randomPos);
 
@@ -842,8 +921,9 @@
                         if(posCategories.id == value){
 
                             d3.select(tickCategorie)
-                                .transition().duration(800)
-                                .delay(delayTransition)
+                                //.transition().duration(800)
+                                //.transition()
+                                //.delay(delayTransition)
                                 .attr("transform", "translate("+posCategories.posx+","+posCategories.posy+")")
                                 .style("visibility", "visible");
 
@@ -851,23 +931,27 @@
                                 var idRect = ".zoneCategorie"+d;
 
                                 d3.select(tickCategorie).select(idRect)
-                                    .transition().duration(800)
+                                    //.transition().duration(800)
+                                    //.transition()
                                     //.delay(delayTransition)
                                     .attr("height", heightLastCategorie );
 
                                 d3.select(tickCategorie).select(".textCategorie")
-                                    .transition().duration(800)
-                                    .delay(delayTransition)
+                                    //.transition().duration(800)
+                                    //.transition()
+                                    //.delay(delayTransition)
                                     .attr("y", heightLastCategorie/2 );
 
                                 d3.select(tickCategorie).select(".lineDivCate")
-                                    .transition().duration(800)
-                                    .delay(delayTransition)
+                                    //.transition().duration(800)
+                                    //.transition()
+                                    //.delay(delayTransition)
                                     .attr("x2", (timeItem.options.graph.width - widhCategories) );
 
                                 d3.select(tickCategorie).select(".lineAxeYitems")
-                                    .transition().duration(800)
-                                    .delay(delayTransition)
+                                    //.transition().duration(800)
+                                    //.transition()
+                                    //.delay(delayTransition)
                                     .attr("y1", heightLastCategorie )
                                     .attr("y2", heightLastCategorie );
 
@@ -880,8 +964,9 @@
                 //Transition Items
 
                 d3.selectAll(".item")
-                    .transition().duration(800)
-                    .delay(delayTransition)
+                    //.transition().duration(800)
+                    .transition()
+                    //.delay(delayTransition)
                     .attr("cx", function(d){
                         return xpos = valuesX(new Date(d.dateItem));
                     } )
@@ -895,6 +980,22 @@
 
         }
 
+    }
+
+    function searchByPosition(size, posx, posy, myArray){
+
+        var minX, maxX, minX, maxY;
+        minx = posx - (size * 2);
+        maxX = posx + (size * 2);
+
+        minY = posy - (size * 2);
+        maxY = posy + (size * 2);
+
+        for (var i=0; i < myArray.length; i++) {
+            if ( (myArray[i].posx >= minX && myArray[i].posx <= maxX) && (myArray[i].posy >= minY && myArray[i].posy <= maxY)  ) {
+                return myArray[i];
+            }
+        }
     }
 
     function searchNameCategorie(d){

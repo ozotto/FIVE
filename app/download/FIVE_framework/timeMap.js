@@ -226,13 +226,14 @@
     function makeInfoTimeLine(){
 
         var pos1, pos2, pos3;
+        var cal1, cal2;
 
-        pos1 = 0 + 5;
-        pos2 = (timeMap.options.graph.width / 3) + 5;
-        pos3 = ((timeMap.options.graph.width / 3) + pos2) + 5;
+        cal1 = (timeMap.options.graph.width * 40) / 100;
+        cal2 = (timeMap.options.graph.width * 82) / 100;
 
-        pos2 = 380;
-        pos3 = 800;
+        pos1 = 5;
+        pos2 = cal1 + 5;
+        pos3 = cal2 + 5;
 
         infoTimeLine = timeMap.zoneTimeLine.append("g")
             .attr("class", "infoTimeline");
@@ -341,28 +342,32 @@
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Country:</strong> <span style='color:red'> name Country </span>";
+                return "<span style='color:red'>"+ d.id + "</span>";
             });
 
         timeMap.tipState = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Canton:</strong> <span style='color:red'>" + d.properties.name + "</span>";
+                return "<span style='color:red'>" + d.properties.name + "</span>";
             });
 
         timeMap.tipCity = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>City:</strong> <span style='color:red'> name city </span>";
+                return "<span style='color:red'>"+ d.properties.name +"</span>";
             });
 
         timeMap.tipItem = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-                return "<strong>Item:</strong> <span style='color:red'>" + d.name + "</span>";
+                var date;
+                date = formatDate(d.date);
+                return "<span style='color:red'>" + d.name + "</span>" +
+                    "<p>"+ date +"</p>";
+                //return "<strong>Item:</strong> <span style='color:red'>" + d.name + "</span>";
             });
 
 
@@ -465,21 +470,19 @@
                 .append("path")
                 .attr("id", function(d) { return d.id; })
                 .call(timeMap.tipState)
-                .attr("class", function(d) { return "pathState "+d.properties.name+ " fillState"; })
-                //.style("fill", "red")
+                .attr("class", function(d) { return "pathState "+d.properties.name; })
+                .style("fill", "#77DD77")
                 .attr("d", path)
                 .on('mouseover', function(d){
                     d3.select(this)
-                        //.transition()
-                        //.style("fill", "#FDFD96");
-                        .attr("class", function(d) { return "pathState "+d.properties.name+ " fillStateHover"; })
+                        .transition()
+                        .style("fill", "#FDFD96");
                     if(timeMap.options.map.tipState) timeMap.tipState.show(d);
                 })
                 .on("mouseout", function(d){
                     d3.select(this)
-                        //.transition()
-                        //.style("fill", "#77DD77")
-                        .attr("class", function(d) { return "pathState "+d.properties.name+ " fillState"; })
+                        .transition()
+                        .style("fill", "#77DD77")
                     if(timeMap.options.map.tipState) timeMap.tipState.hide(d);
                 });
 
@@ -546,7 +549,7 @@
             .on("mouseout", function(d){
                 d3.select(this)
                     .transition()
-                    .style("fill", "red")
+                    .style("fill", "white")
                 if(timeMap.options.map.tipItem) timeMap.tipItem.hide(d);
             });
     }
@@ -563,6 +566,11 @@
             .text(function(d) { return "Current Date: "+dateCurrent;  });
         d3.select(".positionLineTime").attr("transform", "translate(" + xCoord + ",0)");
 
+        if(timeMap.options.timeLine.actualDate > valuesX.invert(xCoord)){
+            d3.selectAll(".zoneMap").style("fill", "#ffffff");
+        }else{
+            d3.selectAll(".zoneMap").style("fill", "#f8f8f8");
+        }
 
         //Items
         if(timeMap.options.map.dragmoveData){
@@ -591,7 +599,7 @@
                                 .on("mouseout", function(d){
                                     d3.select(this)
                                         .transition()
-                                        .style("fill", "red")
+                                        .style("fill", "white")
                                     if(timeMap.options.map.tipItem) timeMap.tipItem.hide(d);
                                 });
 

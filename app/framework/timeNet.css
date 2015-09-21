@@ -52,53 +52,37 @@
 }
 
 /* Items        ------------------- */
-.dataItem{
-    cursor: pointer;
+.backgroundNetwork{
+    fill: white;
 }
 
 .item{
     stroke: steelblue;
+    stroke-width: 3px;
     fill: white;
+    cursor: pointer;
 }
 .itemLine{
     stroke: #cccccc;
     stroke-width: 2;
 }
 
-/* Categories   ------------------- */
-.rectCategories{
-    fill: #D5DDF6;
+
+.textTool {
+    padding: 5px;
+    font: 12px sans-serif;
+    text-align: center;
+    margin: 2px;
 }
 
-.textCategories{
-    fill: black;
+/* Links       ------------------- */
+.link{
+     cursor: pointer;
 }
+.pathLink{
+    stroke: #cccccc;
+/*    stroke-width: 4; */
 
-.tickCategorie{
-    cursor: pointer;
-}
-
-.fillCategorie{
-    fill : #D5DDF6;
-}
-.zoneCategoriesHover{
-    fill : #4682B4;
-}
-
-.lineAxeY{
-    stroke: none !important;
-}
-
-.lineYaxi {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.lineDivCate{
-    stroke: #cccccc !important;
-    fill-opacity: 0.5;
-    stroke-width: 1;
 }
 
 /* Tooltip      ------------------- */
